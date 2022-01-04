@@ -1,0 +1,18 @@
+---
+stages:
+  - quality
+  - test
+
+eslint:
+  stage: quality
+  image: node:17-alpine
+  script:
+    - npm install
+    - npm run test
+
+tests:
+  stage: test
+  image: node:17-alpine
+  script:
+    - npm install
+    - npm run test
