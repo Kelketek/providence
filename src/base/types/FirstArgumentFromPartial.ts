@@ -1,0 +1,1 @@
+export type FirstArgumentFromPartial<T extends Array<any>> = T[0]

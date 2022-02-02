@@ -1,0 +1,1 @@
+export type EntryRemover = (uid: string) => void
