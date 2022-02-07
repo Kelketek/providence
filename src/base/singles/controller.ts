@@ -13,7 +13,7 @@ import {BoundPatchers} from './BoundPatchers'
 import cloneDeep from 'lodash/cloneDeep'
 import ErrorTracking from '../types/ErrorTracking'
 
-declare type SingleFactoryArgs<T> = {
+export type SingleFactoryArgs<T> = {
   store: BaseProxyStore<BaseSingleModule<T>>,
   options: GlobalOptions,
 }

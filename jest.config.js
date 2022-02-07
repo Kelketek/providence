@@ -9,8 +9,15 @@ module.exports = {
       lines: 95,
     }
   },
+  testMatch: [
+    '**/**/*.spec.ts',
+    '**/**/*.spec.tsx',
+  ],
   coveragePathIgnorePatterns: [
-    '.spec.tsx?',
+    '.*[.]spec[.]tsx',
+    '.*[.]spec[.]ts',
+    '.*[.]d[.]ts',
     '/specs/',
+    '.*[.]js',
   ]
 }

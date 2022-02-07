@@ -1,12 +1,12 @@
-/*
-Patcher. This object is a proxy to a particular key on a single. It handles changes in a debounced, cached manner,
-sending a patch request and updating the single as needed.
-
-Patchers could become standard controllers/modules like Singles and eventually Lists are, but for now are
-kept separate to closer match the source structure in Artconomy under time constraints. This may be revisited after
-lists are implemented, since the decision on how to do 'subcontrollers/submodules' will be decided then.
-
-Unlike the singles in lists, however, patchers do affect the source data, which makes them a bit special.
+/**
+* Patcher. This object is a proxy to a particular key on a single. It handles changes in a debounced, cached manner,
+* sending a patch request and updating the single as needed.
+*
+* Patchers could become standard controllers/modules like Singles and eventually Lists are, but for now are
+* kept separate to closer match the source structure in Artconomy under time constraints. This may be revisited after
+* lists are implemented, since the decision on how to do 'subcontrollers/submodules' will be decided then.
+*
+* Unlike the singles in lists, however, patchers do affect the source data, which makes them a bit special.
  */
 
 import debounce from 'lodash/debounce'
@@ -19,7 +19,7 @@ import {isObject} from '../lib'
 import cloneDeep from 'lodash/cloneDeep'
 
 
-declare interface PatcherArgs<T, K extends keyof T> {
+export interface PatcherArgs<T, K extends keyof T> {
   controller: SingleController<T>,
   options: GlobalOptions,
   attrName: K,
