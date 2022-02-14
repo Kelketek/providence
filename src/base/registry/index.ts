@@ -1,10 +1,11 @@
-/*
-Providence performs much of its magic by keeping a registry of controllers behind the scenes.
-These controllers should always be the same, or at least always handle the same data consistently,
-so we work to only ever return one controller per registered name.
+/**
+ * Providence performs much of its magic by keeping a registry of controllers behind the scenes.
+ * These controllers should always be the same, or at least always handle the same data consistently,
+ * so we work to only ever return one controller per registered name.
  */
+
 import {BaseModule} from '../types/BaseModule'
-import {BaseModuleOptions} from '../../react/types/BaseModuleOptions'
+import {BaseModuleOptions} from '../../react-plugin/types/BaseModuleOptions'
 import {GlobalOptions} from '../types/GlobalOptions'
 import {ProvidenceRegistries} from './types/ProvidenceRegistries'
 import BaseProxyStore from '../types/BaseProxyStore'
@@ -77,7 +78,7 @@ export const removeFromRegistry = <Module extends AnyModule, Controller extends 
   delete preEntry[finalName]
 }
 
-declare interface getControllerOptions<Slicer extends AnySlicer, Module extends BaseModule<any, any, any>> {
+export interface getControllerOptions<Slicer extends AnySlicer, Module extends BaseModule<any, any, any>> {
   module: Slicer,
   uid: string,
   namespace: string[],

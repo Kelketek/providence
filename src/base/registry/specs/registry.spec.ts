@@ -1,5 +1,5 @@
 import {RegistryRoot} from '../types/RegistryRoot'
-import {removeFromRegistry} from '../registry'
+import {removeFromRegistry} from '../'
 
 const mockWarn = jest.spyOn(console, 'warn')
 

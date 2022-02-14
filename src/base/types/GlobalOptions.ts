@@ -1,21 +1,30 @@
-/*
-The PluginOptions object will inform the construction of the Singleton module. It contains things like a netCall
-function. The netCall function (based loosely on Axios) is a function that will be called to do HTTP requests. It
-should return a promise containing the
+/**
+The GlobalOptions interface contains the configuration options for Providence.
  */
 import {NetCallOptions} from './NetCallOptions'
-import {BaseModule} from './BaseModule'
-import {BaseController} from './BaseController'
-import {Patcher} from '../singles/types/Patcher'
 import {AxiosError} from 'axios'
 import {FormErrorSet} from '../forms/types/FormErrorSet'
+import {Transformers} from './Transformers'
 
+/**
+ * The GlobalOptions object is used to provide context to Providence. Most of the settings (especially those of the
+ * transformers) should be provided automatically by the plugin for your state manager. However, attributes like
+ * :js:attr:`netCall`, should be overwritten to include context (such as authentication headers)
+ * specific to your environment.
+ */
 export interface GlobalOptions {
+  /**
+   * Utility function for network requests. Make your own version of this function with whatever
+   * headers are required to make network requests to your API endpoints.
+   *
+   * A default implementation, :js:func:`baseCall`, is available.
+   */
   netCall<T, K = T>(opts: NetCallOptions<T>): Promise<K>,
+  /**
+   * A function that takes an error raised by netCall and returns a FormErrorSet.
+   *
+   * @param val An error raised by netCall when making a network request.
+   */
   deriveErrors: <T>(val: AxiosError, knownFields: Array<keyof T>) => FormErrorSet,
-  transformers: {
-    module: <T extends BaseModule<any, any, any>>(module: T) => T,
-    controller: <T extends BaseController<any>>(controller: T) => T,
-    patcher: <T extends Patcher<any, any>>(patcher: T) => T,
-  },
+  transformers: Transformers,
 }

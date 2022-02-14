@@ -1,10 +1,17 @@
+/**
+ * This is the doc comment for base/lib/index.ts
+ *
+ * Specify this is a module comment without renaming it:
+ * @module
+ */
 /*
 This function is used to provide a promise for something which is already known. For instance, there is no reason
 to refetch a resource if we already have it, but the client code may expect a promise rather than a return value.
  */
-import {AxiosError} from 'axios'
+import axios, {AxiosError, AxiosResponse} from 'axios'
 import {FormError} from '../forms/types/FormError'
 import {FormErrorSet} from '../forms/types/FormErrorSet'
+import {NetCallOptions} from '../types/NetCallOptions'
 
 export function immediate<T>(val: T): Promise<T> {
   return new Promise<T>((resolve) => {
@@ -154,4 +161,19 @@ export function deriveErrors<T>(error: AxiosError, knownFields: Array<keyof T>):
     errorSet.errors.push(...missingFieldError(unresolved))
   }
   return errorSet
+}
+
+/**
+ * Example wrapper function around Axios. This is provided as the default example function for
+ * :js:attr:`GlobalOptions.netCall`. Defined in :browse:`this file <src/base/lib/index.ts>`.
+ *
+ * @typeParam T The type of the data sent in the request. This might be undefined for get.
+ * @typeParam K The type of the data expected to return from the server. Defaults to `T`.
+ */
+export function baseCall<T, K = T>(options: NetCallOptions<T>): Promise<K> {
+  const preSuccess = (response: AxiosResponse) => {
+    return response.data
+  }
+  const config = {...options, preSuccess}
+  return axios.request(config).then(preSuccess)
 }

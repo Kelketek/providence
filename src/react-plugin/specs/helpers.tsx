@@ -6,7 +6,7 @@ import {GlobalOptions} from '../../base/types/GlobalOptions'
 import {render} from '@testing-library/react'
 import {AxiosResponse, Method} from 'axios'
 
-declare type ContextRenderOptions = {root?: HTMLElement, context?: GlobalOptions, store?: IModuleStore<any>}
+export type ContextRenderOptions = {root?: HTMLElement, context?: GlobalOptions, store?: IModuleStore<any>}
 
 export const ctxRender = (ui: ReactComponentElement<any>, {context, store}: ContextRenderOptions) => {
   const builtContext = {...defaultContextValues(), ...context}
