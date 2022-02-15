@@ -2,20 +2,31 @@
 stages:
   - quality
   - test
+  - deploy
 
 eslint:
   stage: quality
   image: node:17-alpine
   script:
-    - npm install
-    - npm run test
+    - apk add make
+    - make install_prereqs
+    - make quality
 
-tests:
+tests-node17:
   stage: test
   image: node:17-alpine
   script:
-    - npm install
-    - npm run test
+    - apk add make
+    - make install_prereqs
+    - make test
+
+tests-node16:
+  stage: test
+  image: node:16-alpine
+  script:
+    - apk add make
+    - make install_prereqs
+    - make test
 
 documentation:
   stage: test
@@ -27,3 +38,14 @@ documentation:
     - pip install -r docs/requirements.txt
     - pip install docs/
     - cd docs && make html
+
+npm_push:
+  stage: deploy
+  image: node:17-alpine
+  only:
+    - master
+  script:
+    - apk add make
+    - make install_prereqs
+    - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+    - make publish
