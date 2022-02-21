@@ -1,10 +1,9 @@
 {
   "name": "@opencraft/providence",
-  "version": "0.1.0",
+  "version": "0.0.8",
   "description": "An abstraction layer for common web use cases (forms, singletons, lists) for use with reactive state-management backends.",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
-    "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:clear": "jest --clearCache",
@@ -37,13 +36,15 @@
       "url": "https://artconomy.com/"
     }
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "AGPL-3.0",
   "bugs": {
     "url": "https://gitlab.com/opencraft/dev/providence/issues"
   },
   "homepage": "https://gitlab.com/opencraft/dev/providence",
   "devDependencies": {
-    "@reduxjs/toolkit": "^1.7.1",
     "@testing-library/react": "^12.1.2",
     "@types/jest": "^27.4.0",
     "@types/lodash": "^4.14.178",
@@ -53,23 +54,24 @@
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
-    "axios": "^0.24.0",
     "eslint": "^8.7.0",
     "jest": "^27.4.7",
     "jest-mock-axios": "^4.5.0",
     "react-test-renderer": "^17.0.2",
     "ts-jest": "^27.1.2",
-    "typescript": "^4.5.5"
+    "typescript": "^4.5.5",
+    "typedoc": "^0.22.11"
   },
   "dependencies": {
     "lodash.debounce": "^4.0.8",
-    "typedoc": "^0.22.11",
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
+    "axios": "^0.25.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
-    "redux-dynamic-modules": "^5.2.3"
+    "redux-dynamic-modules": "^5.2.3",
+    "@reduxjs/toolkit": "^1.7.1"
   }
 }

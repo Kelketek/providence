@@ -16,4 +16,4 @@ Providence is based on the initial state management code written by Fox Danger P
 
 ## Documentation
 
-Documentation is incoming. No, really!
+[Full documentation is available on ReadTheDocs](https://eye-of-providence.readthedocs.io/en/latest/).

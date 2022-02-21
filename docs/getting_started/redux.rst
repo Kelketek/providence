@@ -8,7 +8,7 @@ Providence uses `Redux Dynamic Modules`_ and `Redux Toolkit`_ to generate its sl
 
 .. code-block:: console
 
-    npm i -s redux-dynamic-modules react-dom axios react-redux
+    npm i -s redux-dynamic-modules react-dom axios react-redux @reduxjs/toolkit
     npm i -sD @types/react @types/react-dom @types/redux-dynamic-modules
 
 Now that we have our prerequisites, let's set up a very basic project:
@@ -21,7 +21,7 @@ Now that we have our prerequisites, let's set up a very basic project:
       import axios, {AxiosResponse} from 'axios'
       import {Provider} from 'react-redux'
       import {createStore, IModuleStore} from 'redux-dynamic-modules'
-      import {ProvidenceContext, defaultContextValues} from '@opencraft/providence/react/context'
+      import {ProvidenceContext, defaultContextValues} from '@opencraft/providence/react-plugin/context'
       import {NetCallOptions} from '@opencraft/providence/base/types/NetCallOptions'
 
       // To begin using Providence, we need to initialize a dynamic module store:
@@ -60,7 +60,7 @@ Now that we have our prerequisites, let's set up a very basic project:
      import axios, {AxiosResponse} from 'axios'
      import {Provider} from 'react-redux'
      import {createStore} from 'redux-dynamic-modules'
-     import {ProvidenceContext, defaultContextValues} from '@opencraft/providence/react/context'
+     import {ProvidenceContext, defaultContextValues} from '@opencraft/providence/react-plugin/context'
      import {NetCallOptions} from '@opencraft/providence/base/types/NetCallOptions'
 
      // To begin using Providence, we need to initialize a dynamic module store:
@@ -97,7 +97,7 @@ Now that we have our environment configured, let's build out `ExampleComponent` 
 
    .. code-block:: jsx
 
-      import {useSingle} from '@opencraft/providence/react/hooks'
+      import {useSingle} from '@opencraft/providence/react-plugin/hooks'
 
       declare interface Product {
         id: number,
@@ -133,7 +133,7 @@ Now that we have our environment configured, let's build out `ExampleComponent` 
 
    .. code-block:: jsx
 
-      import {useSingle} from '@opencraft/providence/react/hooks'
+      import {useSingle} from '@opencraft/providence/react-plugin/hooks'
 
       const ExampleComponent = () => {
 
