@@ -8,7 +8,7 @@ import mockAxios from 'jest-mock-axios'
 
 let store: IModuleStore<any>
 
-function singleState(name = 'single.test', overrides?: Partial<SingleState<any>>) {
+export function singleState(name = 'single.test', overrides?: Partial<SingleState<any>>) {
   return {
     [name]: {
       name,
@@ -258,7 +258,7 @@ describe('Single module tasks', () => {
     }
     ctxRender(<CodeRunner code={fetch} />, {store})
     expect(mockAxios.request).toHaveBeenCalledWith(
-      rq('/test/', 'get', undefined, {params: {a: 'test'}, preSuccess: expect.any(Function), signal: expect.any(Object)}))
+      rq('/test/', 'get', undefined, {params: {a: 'test'}, signal: expect.any(Object)}))
     expect(mockAxios.request).toHaveBeenCalledTimes(1)
   })
   it('Handles a fetching failure', async () => {
@@ -305,7 +305,7 @@ describe('Single module tasks', () => {
       useLayoutEffect(() => {
         expect(JSON.parse(JSON.stringify(controller))).toEqual({
           controller: 'single.test',
-          module: 'single',
+          moduleType: 'single',
           x: {a: 'Beep'},
         })
       }, [])
@@ -373,7 +373,7 @@ describe('Single module tasks', () => {
           // Post does not automatically update the resource, since its semantics do not necessarily imply changing
           // that particular resource.
           expect(controller.x).toEqual({a: 'stuff', b: 3})
-          expect(response).toEqual({a: 'Server Response', b: 100})
+          expect(response.data).toEqual({a: 'Server Response', b: 100})
           verified = true
         })
       }, [])
@@ -493,7 +493,7 @@ describe('Patcher handling', () => {
         expect(JSON.parse(JSON.stringify(controller.p.a))).toEqual({
           attrName: 'a',
           controller: 'single.test',
-          module: 'patcher',
+          moduleType: 'patcher',
           rawValue: {b: 4}
         })
       }, [])

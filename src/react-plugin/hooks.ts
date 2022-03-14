@@ -1,40 +1,15 @@
-import {createSlice, ReducersMapObject} from '@reduxjs/toolkit'
-import {IModule, IModuleStore} from 'redux-dynamic-modules'
+import {IModuleStore} from 'redux-dynamic-modules'
 import {BaseModuleOptions} from './types/BaseModuleOptions'
 import {useContext, useLayoutEffect, useMemo} from 'react'
-import {useStore, useSelector} from 'react-redux'
+import {useSelector, useStore} from 'react-redux'
 import {ProvidenceContext} from './context'
 import {v4 as randomUUID} from 'uuid'
-import {proxyMaker} from './storeProxy'
 import {defaultSpacer, getController} from '../base/registry'
-import {MakeModuleOptions} from '../base/registry/types/MakeModuleOptions'
 import {AnyModule} from '../base/types/AnyModule'
 import {AnySlicer} from '../base/types/AnySlicer'
 import {BaseController} from '../base/types/BaseController'
 import {ProvidenceReduxState} from './types/ProvidenceReduxState'
 
-
-export const moduleMaker = <T extends AnySlicer>(store: IModuleStore<any>) => {
-  /*
-  Registers a module composed by Providence into the Dynamic Redux Module store.
-
-  Returns a function that will remove that module.
-   */
-  return ({name, baseModule}: MakeModuleOptions<T>): () => void => {
-    const slice = createSlice({
-      name,
-      initialState: baseModule.state,
-      reducers: baseModule.mutations,
-    })
-    const iModule: IModule<T> = {
-      id: name,
-      reducerMap: {
-        [name]: slice.reducer,
-      } as ReducersMapObject,
-    }
-    return store.addModule(iModule).remove
-  }
-}
 
 /* Builds a react hook that creates Redux-aware Providence controllers. */
 export const buildUseInterface = <
@@ -56,14 +31,20 @@ export const buildUseInterface = <
       uid,
       namespace: modifiedNamespace,
       moduleOptions,
-      globalOptions: context.options,
-      registries: context.registries,
-      makeModule: moduleMaker<ModuleType>(store),
-      makeProxy: proxyMaker(store),
+      globalOptions: context,
+      makeModule: context.drivers.makeModuleFactory(store),
+      makeProxy: context.drivers.makeProxyFactory(store),
     }), [])
     // This call will indicate to React what state we're watching for on the slice, and trigger
-    // a rerender if it changes.
-    useSelector((state: ProvidenceReduxState) => state[controller.name])
+    // a rerender if it changes. This may need to be optimized in the future for lists, since it will include
+    // all list items.
+    useSelector((state: ProvidenceReduxState) => {
+      const result: {[key: string]: Record<string, any>} = {}
+      for (const name of controller.managedNames) {
+        result[name] = state[name]
+      }
+      return result
+    })
     useLayoutEffect(() => {
       // useLayoutEffect is used here instead of useEffect because useEffect is called async afterwards,
       // while useLayoutEffect is always called synchronously when its dependencies are met.

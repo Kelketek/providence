@@ -4,10 +4,15 @@ import {QueryParams} from '../../types/QueryParams'
 import {FieldUpdate} from './FieldUpdate'
 import {PatchersRoot} from './PatchersRoot'
 import {PatcherState} from './PatcherState'
-import {BoundPatchers} from '../BoundPatchers'
+import {BoundPatchers} from './BoundPatchers'
 import ErrorTracking from '../../types/ErrorTracking'
+import {AxiosResponse} from 'axios'
 
 export interface SingleController<T> extends BaseController<BaseSingleModule<T>> {
+  /**
+   * Returns `'single`', the type of module this controller handles.
+   */
+  moduleType: 'single',
   /**
    * The endpoint property on the single module. This is a getter/setter, so you can update the endpoint.
    */
@@ -70,16 +75,16 @@ export interface SingleController<T> extends BaseController<BaseSingleModule<T>>
    * Sends a post request. DOES NOT update :js:attr:`x <SingleController.x>` with the value returned from the server. Returns a promise
    * containing the value the server sent back.
    */
-  post: <I, O = I>(val: I) => Promise<O>,
+  post: <I, O = I>(val: I) => Promise<AxiosResponse<O>>,
   /**
    * Sends a deletion request to the server. If successful, marks :js:attr:`x <SingleController.x>` as null and sets
-   * the :js:attr:`deleted <SingleController.deleted>` flag to `true`.
-   */
-  delete: () => Promise<null>,
-  /**
-   * Sends a deletion request to the server. If successful, marks :js:attr:`x <SingleController.x>` as null, the
-   * :js:attr:`ready <SingleController.ready>` flag to `false` and sets the
+   * the :js:attr:`deleted <SingleController.deleted>` flag to `true` and sets the
    * :js:attr:`deleted <SingleController.deleted>` flag to `true`.
+   */
+  delete: () => Promise<void>,
+  /**
+   * Retrieves the stored error information from our last attempt at :js:attr:`getting <SingleController.get>` the
+   * remote object.
    */
   errors: ErrorTracking,
   /**
@@ -145,7 +150,7 @@ export interface SingleController<T> extends BaseController<BaseSingleModule<T>>
    */
   toJSON: () => {
     controller: string,
-    module: 'single',
+    moduleType: 'single',
     x: T | null,
   }
 }

@@ -23,9 +23,8 @@ export interface SingleModuleOptions<T> {
    * state management. This will prevent the patchers from making bogus network requests.
    */
   endpoint?: string,
-  /** If set to True, the registry will not remove this module even if all listening components are removed.
-   *
-   * Default: '#'
+  /**
+   * If set to true, the registry will not remove this module even if all listening components are removed.
    */
   persistent?: boolean,
   /** Indicates whether we have attempted to fetch the data from its endpoint before. **/

@@ -7,7 +7,6 @@
 import {BaseModule} from '../types/BaseModule'
 import {BaseModuleOptions} from '../../react-plugin/types/BaseModuleOptions'
 import {GlobalOptions} from '../types/GlobalOptions'
-import {ProvidenceRegistries} from './types/ProvidenceRegistries'
 import BaseProxyStore from '../types/BaseProxyStore'
 import {buildNestedPath, createPath, explodeName, flattenNamespace, retrieveName} from '../lib'
 import {RegistryRoot} from './types/RegistryRoot'
@@ -82,11 +81,39 @@ export interface getControllerOptions<Slicer extends AnySlicer, Module extends B
   module: Slicer,
   uid: string,
   namespace: string[],
-  moduleOptions: Omit<BaseModuleOptions, 'name'>,
+  moduleOptions?: Omit<BaseModuleOptions, 'name'>,
   globalOptions: GlobalOptions,
-  registries: ProvidenceRegistries,
   makeModule: (options: MakeModuleOptions<any>) => () => void,
   makeProxy: (options: MakeModuleOptions<any>) => BaseProxyStore<Module>
+}
+
+/**
+ * Arguments for RemoveListener
+ */
+declare interface RemoveListenerArgs {
+  uid: string,
+  registryRoot: RegistryRoot<any, any>,
+  name: string,
+}
+
+/**
+ * Removes a listening UID from the registry, and then returns `true` if there are any remaining listeners,
+ * or `false` if no listeners remain.
+ */
+export const removeListener = ({uid, name, registryRoot}: RemoveListenerArgs) => {
+  const namespace = explodeName(name)
+  let {listeners} = retrieveName(
+    registryRoot, buildNestedPath(namespace, 'children'),
+    true,
+  ) || {listeners: undefined}
+  /* istanbul ignore if */
+  if (listeners === undefined) {
+    console.warn(`Tried to remove listener for ${name} ${uid}, but registry entry is broken or missing.`)
+    return
+  }
+  listeners = listeners.filter((val: string) => val != uid)
+  registerOrUpdateEntry(registryRoot, namespace, {listeners})
+  return Boolean(listeners.length)
 }
 
 /*
@@ -98,39 +125,30 @@ export const getController = <
   Controller extends BaseController<Module>
 >(
   {
-    module, uid, namespace, moduleOptions, registries, globalOptions, makeModule,
+    module, uid, namespace, moduleOptions, globalOptions, makeModule,
     makeProxy,
   }: getControllerOptions<Slicer, Module>): {controller: Controller, remover: EntryRemover} => {
   const name = flattenNamespace(namespace)
-  const registryRoot = registries[module.name] as RegistryRoot<Module, Controller>
+  const registryRoot = globalOptions.registries()[module.name] as RegistryRoot<Module, Controller>
   const getModule = (namePath: string[]) => retrieveName<RegistryEntry<Module, Controller>>(
     registryRoot, buildNestedPath(namePath, 'children'),
     true,
   ) || {controller: undefined, remover: undefined, listeners: undefined}
   let {controller, remover, listeners} = getModule(namespace)
-  if (!controller) {
-    const baseModule = module.factory(globalOptions)({...moduleOptions, name})
-    const baseRemover = makeModule({baseModule, name})
-    remover = (uid: string) => {
-      controller = controller as Controller
-      const namespace = explodeName(controller.name)
-      // Listeners should always exist by this point.
-      let {listeners} = getModule(namespace)
-      /* istanbul ignore if */
-      if (listeners === undefined) {
-        console.warn(`Tried to remove listener for ${name} ${uid}, but registry entry is broken or missing.`)
-        return
-      }
-      listeners = listeners.filter((val) => val != uid)
-      registerOrUpdateEntry(registryRoot, namespace, {listeners})
-      if (listeners.length == 0 && !controller.attr('persistent')) {
-        controller.preDestroy()
-        baseRemover()
-        removeFromRegistry(registryRoot, namespace)
-      }
+  if (!(remover && controller)) {
+    if (!remover && !moduleOptions) {
+      throw Error(
+        `Attempted to retrieve a pre-existing ${module.name} module with name ${name}, but it could not be found!`,
+      )
     }
-    const moduleProxy = makeProxy({name, baseModule})
-    controller = module.controllerFactory({store: moduleProxy, options: globalOptions})
+    const baseModule = module.factory(globalOptions)({...moduleOptions, name})
+    if (!remover) {
+      remover = makeModule({baseModule, name, globalOptions})
+    }
+    if (!controller) {
+      const moduleProxy = makeProxy({name, baseModule, globalOptions})
+      controller = module.controllerFactory({store: moduleProxy, globalOptions: globalOptions})
+    }
   }
   if (!listeners) {
     listeners = [uid]
@@ -142,5 +160,15 @@ export const getController = <
   remover = remover as () => void
   controller = controller as Controller
   registerOrUpdateEntry<Module, Controller>(registryRoot, namespace, {listeners, controller, remover})
-  return {controller, remover}
+  const controllerBoundRemover = (uid: string) => {
+    controller = controller as Controller
+    const namespace = explodeName(controller.name)
+    const listenersRemain = removeListener({uid, name: controller.name, registryRoot})
+    if (!listenersRemain && !controller.attr('persistent')) {
+      controller.preDestroy();
+      (remover as () => void)()
+      removeFromRegistry(registryRoot, namespace)
+    }
+  }
+  return {controller, remover: controllerBoundRemover}
 }

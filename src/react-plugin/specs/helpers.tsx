@@ -47,15 +47,12 @@ export const waitFor = async (test: () => any | void, description?: string, time
 
 // Mock request builder for axios.
 export const rq = (url: string, method: Method, data?: any, config?: { [key: string]: any }) => {
-  config = config || {signal: expect.any(Object)}
+  config = config || {signal: expect.any(AbortSignal)}
   if (!config.params && method === 'get') {
     config.params = {}
   }
   if (data) {
     config.data = data
-  }
-  if (!config.preSuccess) {
-    config.preSuccess = expect.any(Function)
   }
   return {url, method, ...config}
 }

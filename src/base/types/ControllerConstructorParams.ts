@@ -4,5 +4,5 @@ import {GlobalOptions} from './GlobalOptions'
 
 export interface ControllerConstructorParams<ModuleDefinition extends BaseModule<any, any, any>> {
   store: BaseProxyStore<ModuleDefinition>,
-  options: GlobalOptions,
+  globalOptions: GlobalOptions,
 }

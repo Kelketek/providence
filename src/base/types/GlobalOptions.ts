@@ -1,10 +1,10 @@
 /**
 The GlobalOptions interface contains the configuration options for Providence.
  */
-import {NetCallOptions} from './NetCallOptions'
-import {AxiosError} from 'axios'
-import {FormErrorSet} from '../forms/types/FormErrorSet'
 import {Transformers} from './Transformers'
+import {Drivers} from './Drivers'
+import {ProvidenceRegistries} from '../registry/types/ProvidenceRegistries'
+import {ProvidenceClient} from './ProvidenceClient'
 
 /**
  * The GlobalOptions object is used to provide context to Providence. Most of the settings (especially those of the
@@ -19,12 +19,8 @@ export interface GlobalOptions {
    *
    * A default implementation, :js:func:`baseCall`, is available.
    */
-  netCall<T, K = T>(opts: NetCallOptions<T>): Promise<K>,
-  /**
-   * A function that takes an error raised by netCall and returns a FormErrorSet.
-   *
-   * @param val An error raised by netCall when making a network request.
-   */
-  deriveErrors: <T>(val: AxiosError, knownFields: Array<keyof T>) => FormErrorSet,
+  client: ProvidenceClient,
   transformers: Transformers,
+  drivers: Drivers,
+  registries: () => ProvidenceRegistries,
 }

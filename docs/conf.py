@@ -62,7 +62,7 @@ autosectionlabel_prefix_document = True
 
 # Settings, per sphinx-js
 js_language = 'typescript'
-js_source_path = '../'
+js_source_path = '../src'
 jsdoc_config_path = '../tsconfig.json'
 
 branch = subprocess.check_output(['git', 'branch', '--show-current']).decode('utf-8').strip()
