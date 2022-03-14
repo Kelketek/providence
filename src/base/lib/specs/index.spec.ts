@@ -1,7 +1,7 @@
 import {
-  buildNestedPath,
+  buildNestedPath, completeAssign,
   createPath,
-  deriveErrors,
+  baseDeriveErrors,
   explodeName,
   flattenNamespace,
   immediate,
@@ -150,13 +150,13 @@ const mockError = (errorStructure: any): AxiosError => {
   }
 }
 
-describe('deriveErrors', () => {
+describe('baseDeriveErrors', () => {
   const mockConsoleError = jest.spyOn(console, 'error')
   beforeEach(() => {
     mockConsoleError.mockReset()
   })
   it('Derives errors for known fields', () => {
-    const result = deriveErrors(mockError(
+    const result = baseDeriveErrors(mockError(
       {
         response: {
           data: {stuff: ['Not enough stuff']}
@@ -166,7 +166,7 @@ describe('deriveErrors', () => {
     expect(result.errors).toEqual([])
   })
   it('Adds to the general errors when receiving a field error it does not recognize', () => {
-    const result = deriveErrors(mockError(
+    const result = baseDeriveErrors(mockError(
       {
         response: {
           data: {stuff: ['Not enough stuff']}
@@ -177,7 +177,7 @@ describe('deriveErrors', () => {
     ])
   })
   it('Recognizes a default "detail" field for general errors', () => {
-    const result = deriveErrors(mockError(
+    const result = baseDeriveErrors(mockError(
       {
         response: {
           data: {detail: 'Not enough stuff'}
@@ -188,7 +188,7 @@ describe('deriveErrors', () => {
     ])
   })
   it('Translates known network errors', () => {
-    const result = deriveErrors(mockError(
+    const result = baseDeriveErrors(mockError(
       {
         code: 'ECONNABORTED',
       }), ['things'])
@@ -198,7 +198,7 @@ describe('deriveErrors', () => {
     ])
   })
   it('Translates unknown network errors', () => {
-    const result = deriveErrors(mockError(
+    const result = baseDeriveErrors(mockError(
       {
         code: 'EPLURIBUSUNUM',
       }), ['things'])
@@ -206,5 +206,40 @@ describe('deriveErrors', () => {
     expect(result.errors).toEqual([
       'We had an issue contacting the server. Please try again later.',
     ])
+  })
+})
+
+describe('completeAssign', () => {
+  it('Performs a basic assignment', () => {
+    const target: {[key: string]: string} = {}
+    completeAssign(target, {stuff: 'things'})
+    expect(target.stuff).toBe('things')
+  })
+  it('Performs assignment of getters and setters', () => {
+    let flag = false
+    const target: {[key: string]: boolean} = {}
+    const newProps = {
+      get flag() {
+        return flag
+      },
+      set flag(val: boolean) {
+        flag = val
+      }
+    }
+    completeAssign(target, newProps)
+    expect(target.flag).toBe(false)
+    flag = true
+    expect(target.flag).toBe(true)
+    target.flag = false
+    expect(target.flag).toBe(false)
+  })
+  it('Performs assignment of symbols', () => {
+    const target: {[key: symbol]: string} = {}
+    const key = Symbol('stuff')
+    const newProps = {
+      [key]: 'things'
+    }
+    completeAssign(target, newProps)
+    expect(target[key]).toBe('things')
   })
 })

@@ -12,6 +12,11 @@ import axios, {AxiosError, AxiosResponse} from 'axios'
 import {FormError} from '../forms/types/FormError'
 import {FormErrorSet} from '../forms/types/FormErrorSet'
 import {NetCallOptions} from '../types/NetCallOptions'
+import {PaginationResult} from '../types/PaginationResult'
+import {DeriveListArgs} from '../types/DeriveListArgs'
+import {DeriveSingleArgs} from '../types/DeriveSingleArgs'
+import {ListState} from '../lists/types/ListState'
+import {ListController} from '../lists/types/ListController'
 
 export function immediate<T>(val: T): Promise<T> {
   return new Promise<T>((resolve) => {
@@ -133,7 +138,7 @@ const ERROR_TRANSLATION_MAP: {[key: string]: string} = {
   UNKNOWN: 'We had an issue contacting the server. Please try again later.',
 }
 
-export function deriveErrors<T>(error: AxiosError, knownFields: Array<keyof T>): FormErrorSet {
+export function baseDeriveErrors<T>(error: AxiosError, knownFields: Array<keyof T>): FormErrorSet {
   const errorSet: FormErrorSet<T> = {
     fields: {},
     errors: [],
@@ -170,10 +175,95 @@ export function deriveErrors<T>(error: AxiosError, knownFields: Array<keyof T>):
  * @typeParam T The type of the data sent in the request. This might be undefined for get.
  * @typeParam K The type of the data expected to return from the server. Defaults to `T`.
  */
-export function baseCall<T, K = T>(options: NetCallOptions<T>): Promise<K> {
-  const preSuccess = (response: AxiosResponse) => {
-    return response.data
+export function baseCall<T, K = T>(options: NetCallOptions<T>): Promise<AxiosResponse<K>> {
+  return axios.request(options)
+}
+
+/**
+ * Example function for deriving lists from an Axios response. This is based on the output from the
+ * Django REST framework's paginator. You may want to replace the function with your own.
+ */
+export function baseDeriveList<T>({response, state}: DeriveListArgs<T>): PaginationResult<T> {
+  if (state.paginated) {
+    return {
+      list: response.data.results,
+      pageInfo: {size: response.data.size, count: response.data.count},
+    }
+  } else {
+    return {
+      list: response.data,
+      pageInfo: null,
+    }
   }
-  const config = {...options, preSuccess}
-  return axios.request(config).then(preSuccess)
+}
+
+/**
+ * Example function for deriving singles from an Axios response. This is based on the output from the Django REST
+ * framework, which places the object right at the root of the data response by default.
+ */
+export function baseDeriveSingle<T>({response}: DeriveSingleArgs<T>): T {
+  return response.data
+}
+
+/**
+ * Like `Object.assign`, but also copies full descriptors, such as setters/getters.
+  */
+export const completeAssign = <T>(target: Partial<T>, ...sources: Partial<T>[]) => {
+  // Modified from https://stackoverflow.com/a/60114832/927224
+  sources.forEach(source => {
+    const descriptors = Object.keys(source).reduce((descriptors: PropertyDescriptorMap, key) => {
+      descriptors[key] = Object.getOwnPropertyDescriptor(source, key) as PropertyDescriptor;
+      return descriptors
+    }, {})
+
+    // By default, Object.assign copies enumerable Symbols, too
+    Object.getOwnPropertySymbols(source).forEach(sym => {
+      const descriptor = Object.getOwnPropertyDescriptor(source, sym) as PropertyDescriptor;
+      if (descriptor.enumerable) {
+        descriptors[sym as unknown as string] = descriptor
+      }
+    });
+    Object.defineProperties(target, descriptors)
+  });
+  return target
+}
+
+/**
+ * Example pagination initialization plugin. It is run upon a module's initial state before it's first committed. Return
+ * the revised state.
+ */
+export const baseInitializePagination = <T>(state: ListState<T>) => {
+  if (!state.params) {
+    state.params = {}
+  }
+  state.params.page = state.params.page || '1'
+  state.params.size = state.params.size || '24'
+  return state
+}
+
+/**
+ * Example 'get current page' function. Gets the current page from the list state.
+ */
+export const baseGetCurrentPage = <T>(state: ListState<T>) => {
+  return parseInt(`${(state.params && state.params.page) || 1}`, 10)
+}
+
+/**
+ * Example 'set current page' function. Works upon the controller. This should not call the actual fetch request.
+ */
+export const baseSetCurrentPage = <T>(controller: ListController<T>, page: number) => {
+  const params = {...controller.params}
+  params.page = `${page}`
+  controller.params = params
+}
+
+/**
+ * Example 'get total pages' function. Works upon the list state. Client APIs aren't guaranteed to support this,
+ * so we try to avoid use of this value in Providence itself. Null is a possible return here.
+ */
+export const baseGetTotalPages = <T>(state: ListState<T>) => {
+  if (state.paginated && state.pageInfo) {
+    return (state.pageInfo.count / state.pageInfo.size) || 1
+  }
+  return null
 }

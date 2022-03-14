@@ -7,6 +7,12 @@ import lodash from 'lodash'
  */
 export interface Patcher<T, AttrName extends keyof T> {
   /**
+   * Returns `'patcher`', the type of 'module' this wrapper handles. Technically patchers aren't modules,
+   * since their state is shared with singles, however this makes it consistent with similarly behaving controllers,
+   * which should have a `moduleType` property for easy identification.
+   */
+  moduleType: 'patcher'
+  /**
    * The name of the field we're tracking on the single.
    */
   attrName: AttrName,
@@ -89,5 +95,5 @@ export interface Patcher<T, AttrName extends keyof T> {
    *
    * @private
    */
-  toJSON: () => {attrName: AttrName, controller: string, rawValue: T[AttrName], module: 'patcher'}
+  toJSON: () => {attrName: AttrName, controller: string, rawValue: T[AttrName], moduleType: 'patcher'}
 }

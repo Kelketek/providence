@@ -23,23 +23,24 @@ Now that we have our prerequisites, let's set up a very basic project:
       import {createStore, IModuleStore} from 'redux-dynamic-modules'
       import {ProvidenceContext, defaultContextValues} from '@opencraft/providence/react-plugin/context'
       import {NetCallOptions} from '@opencraft/providence/base/types/NetCallOptions'
+      import {DeriveSingleArgs} from '@opencraft/providence/base/types/DeriveSingleArgs'
 
       // To begin using Providence, we need to initialize a dynamic module store:
       const store: IModuleStore<{}> = createStore({})
 
       const netCall = <T, K = T>(options: NetCallOptions<T>): Promise<K> => {
-        const preSuccess = (response: AxiosResponse) => {
-          // The test API we'll be using has a 'data' attribute within the JSON data which contains the real data.
-          return response.data.data
-        }
         // You'll want to add whatever other Axios configuration arguments you need for your API here. That will likely
         // include things like Authorization headers. Read the Axios documentation for more information.
         const config = {...options, preSuccess}
         return axios.request(config).then(preSuccess)
       }
-      // The Providence redux plugin should give you sane defaults. In most cases, the only thing you need to override
+      // The Providence redux plugin should give you sane defaults. In many cases, the only thing you need to override
       // is netCall.
-      const buildContext = {...defaultContextValues(), netCall}
+      const buildContext = {...defaultContextValues()}
+      buildContext.client.deriveSingle = ({response, state}: DeriveSingleArgs) => {
+        // The test API we'll be using has a 'data' attribute within the JSON data which contains the real data.
+        return response.data.data
+      }
       const ExampleComponent = () => <div />
 
       ReactDOM.render(
@@ -67,10 +68,6 @@ Now that we have our prerequisites, let's set up a very basic project:
      const store = createStore({})
 
      const netCall = (options) => {
-       const preSuccess = (response: AxiosResponse) => {
-         // The test API we'll be using has a 'data' attribute within the JSON data which contains the real data.
-            return response.data.data
-       }
        // You'll want to add whatever other Axios configuration arguments you need for your API here. That will likely
        // include things like Authorization headers. Read the Axios documentation for more information.
        const config = {...options, preSuccess}
@@ -79,6 +76,10 @@ Now that we have our prerequisites, let's set up a very basic project:
      // The Providence redux plugin should give you sane defaults. In most cases, the only thing you need to override
      // is netCall.
      const buildContext = {...defaultContextValues(), netCall}
+     buildContext.client.deriveSingle = ({request, state}) => {
+       // The test API we'll be using has a 'data' attribute within the JSON data which contains the real data.
+       return response.data.data
+     }
      const ExampleComponent = () => <div />
 
      ReactDOM.render(
@@ -157,12 +158,9 @@ Now that we have our environment configured, let's build out `ExampleComponent` 
         )
       }
 
-Now our `ExampleComponent` grabs the product, renders it for us, and even provides a little button to bump the value of
-the year. When the value is verified by the server, it returns the result and updates our internal representation of the
-product automagically.
+Now our `ExampleComponent` grabs the product, renders it for us, and even provides a little button to bump the value of the year. When the value is verified by the server, it returns the result and updates our internal representation of the product automagically.
 
-Now that you've seen the basics, learn more by diving into the :ref:`Concepts <Concepts:Concepts>`, and then study the
-details of the :ref:`Singles <module_types/singles:Singles>` module for more practical information.
+Now that you've seen the basics, learn more by diving into the :ref:`Concepts <Concepts:Concepts>`, and then study the details of the :ref:`Singles <module_types/singles:Singles>` module for more practical information.
 
 .. _Redux: https://redux.js.org/
 .. _React: https://reactjs.org/

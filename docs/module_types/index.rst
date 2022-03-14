@@ -1,10 +1,11 @@
 Module Types
 ============
 
-Providence shall have several module types. For the moment, there are only Singles. Lists and Forms are also planned.
+Providence has two modules-- Singles and Lists-- with Forms planned.
 
 .. toctree::
    :hidden:
 
    singles
+   lists
 

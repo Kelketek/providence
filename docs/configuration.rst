@@ -8,3 +8,9 @@ Providence's configuration options allow you to customize some of its automation
 
 .. js:autoclass:: Transformers
     :members:
+
+.. js:autoclass:: ProvidenceClient
+    :members:
+
+.. js:autoclass:: Drivers
+    :members:

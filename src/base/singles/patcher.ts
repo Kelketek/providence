@@ -21,7 +21,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 export interface PatcherArgs<T, K extends keyof T> {
   controller: SingleController<T>,
-  options: GlobalOptions,
+  globalOptions: GlobalOptions,
   attrName: K,
 }
 
@@ -33,7 +33,7 @@ export const initialPatcherState = <T, AttrName extends keyof T>(): PatcherState
   patching: false,
 })
 
-export function errorSend<T, AttrName extends keyof T>(patcher: Patcher<T, AttrName>, options: GlobalOptions): (error: AxiosError) => void {
+export function errorSend<T, AttrName extends keyof T>(patcher: Patcher<T, AttrName>, globalOptions: GlobalOptions): (error: AxiosError) => void {
   return (error: AxiosError) => {
     const attrName = patcher.attrName as string & keyof T
     // jest-mock-axios library doesn't have a way to test this, unfortunately. It's still uses the old 'cancelToken'
@@ -44,7 +44,7 @@ export function errorSend<T, AttrName extends keyof T>(patcher: Patcher<T, AttrN
       // sending a new request, so don't reset the patching flag.
       return
     }
-    const errors = options.deriveErrors<T>(error, [attrName])
+    const errors = globalOptions.client.deriveErrors<T>(error, [attrName])
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
     const message = (errors.fields[attrName] && errors.fields[attrName]![0]) || errors.errors[0]
     /* eslint-enable @typescript-eslint/no-non-null-assertion */
@@ -53,8 +53,11 @@ export function errorSend<T, AttrName extends keyof T>(patcher: Patcher<T, AttrN
   }
 }
 
-export const patcherFactory = <T, AttrName extends keyof T>({controller, options, attrName}: PatcherArgs<T, AttrName>): Patcher<T, AttrName> => {
+export const patcherFactory = <T, AttrName extends keyof T>({controller, globalOptions, attrName}: PatcherArgs<T, AttrName>): Patcher<T, AttrName> => {
   const patcher: Patcher<T, AttrName> = {
+    get moduleType (): 'patcher' {
+      return 'patcher'
+    },
     attrName,
     controller,
     cancelController: new AbortController(),
@@ -94,6 +97,7 @@ export const patcherFactory = <T, AttrName extends keyof T>({controller, options
     },
     // Not to be called directly. This function handles the call to the server and subsequent update of the datastore.
     rawSet(val: T[AttrName]) {
+      const client = globalOptions.client
       const model = controller.x || ({} as Partial<T>)
       const oldVal = model[patcher.attrName]
       if (oldVal === undefined) {
@@ -112,16 +116,16 @@ export const patcherFactory = <T, AttrName extends keyof T>({controller, options
         return
       }
       patcher.patching = true
-      options.netCall<Partial<T>>({
+      globalOptions.client.netCall<Partial<T>>({
         url: controller.endpoint,
         method: 'patch',
         data,
         signal: patcher.cancelController.signal,
-      }).then((response) => {
+      }).then((response) => client.deriveSingle<T>({response, state: controller.rawState})).then((response) => {
         controller.updateX(response)
         this.dirty = false
         this.patching = false
-      }).catch(errorSend<T, AttrName>(patcher, options))
+      }).catch(errorSend<T, AttrName>(patcher, globalOptions))
     },
     get model(): T[AttrName] {
       if (patcher.dirty) {
@@ -159,12 +163,12 @@ export const patcherFactory = <T, AttrName extends keyof T>({controller, options
     }),
     // We make a special JSON serialization here to avoid recursive loops when serializing
     toJSON: () => {
-      return {attrName, controller: controller.name, module: 'patcher', rawValue: patcher.rawValue}
+      return {attrName, controller: controller.name, moduleType: 'patcher', rawValue: patcher.rawValue}
     },
   }
 
   patcher.debouncedRawSet = debounce(patcher.rawSet, 250, {trailing: true})
-  options.transformers.patcher(patcher)
+  globalOptions.transformers.patcher(patcher)
   controller.ensurePatcherSettings(attrName)
   return patcher
 }
