@@ -135,7 +135,6 @@ export function buildList<T>(globalOptions: GlobalOptions): (options: ListModule
           // if there's enough demand from client developers.
           const refs = addModules({globalOptions, makeModule, commit, state, entries, stateFor})
           const toRemove = state.refs.filter((name) => !refs.includes(name))
-          commit('setRefs', refs)
           for (const name of toRemove) {
             const listenersRemain = removeListener({uid: state.name, registryRoot: globalOptions.registries().single, name})
             // If controllers exist, they'll need to perform the cleanup. But if they don't, we do. Since both the
@@ -152,6 +151,7 @@ export function buildList<T>(globalOptions: GlobalOptions): (options: ListModule
               remover()
             }
           }
+          commit('setRefs', refs)
           return entries
         },
         prefix({state, makeModule, commit, stateFor}, entries: T[]) {
