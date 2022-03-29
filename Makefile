@@ -10,7 +10,8 @@ build:  # Build the NPM package.
 	sed -i -e '/"rootDir"/d' dist/tsconfig.json
 	cd dist && npx tsc && cd ..
 	rm -rvf dist/__mocks__
-	cp package.json .npmignore README.md LICENSE dist/
+	find dist -depth -regex '.*/specs[/]?.*' -delete
+	cp package.json README.md LICENSE dist/
 
 oneshot: install_prereqs build
 
