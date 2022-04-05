@@ -17,45 +17,45 @@ Now that we have our prerequisites, let's set up a very basic project:
 
    .. code-block:: jsx
 
-      import ReactDOM from 'react-dom'
-      import axios, {AxiosResponse} from 'axios'
-      import {Provider} from 'react-redux'
-      import {createStore, IModuleStore} from 'redux-dynamic-modules'
-      import {ProvidenceContext, defaultContextValues} from '@opencraft/providence/react-plugin/context'
-      import {NetCallOptions} from '@opencraft/providence/base/types/NetCallOptions'
-      import {DeriveSingleArgs} from '@opencraft/providence/base/types/DeriveSingleArgs'
+    import ReactDOM from 'react-dom'
+    import axios, {AxiosResponse} from 'axios'
+    import {Provider} from 'react-redux'
+    import {createStore, IModuleStore} from 'redux-dynamic-modules'
+    import {ProvidenceContext, defaultContextValues} from '@opencraft/providence/react-plugin/context'
+    import {NetCallOptions} from '@opencraft/providence/base/types/NetCallOptions'
+    import {DeriveSingleArgs} from '@opencraft/providence/base/types/DeriveSingleArgs'
 
-      // To begin using Providence, we need to initialize a dynamic module store:
-      const store: IModuleStore<{}> = createStore({})
+    // To begin using Providence, we need to initialize a dynamic module store:
+    const store: IModuleStore<{}> = createStore({})
 
-      const netCall = <T, K = T>(options: NetCallOptions<T>): Promise<K> => {
-        // You'll want to add whatever other Axios configuration arguments you need for your API here. That will likely
-        // include things like Authorization headers. Read the Axios documentation for more information.
-        const config = {...options, preSuccess}
-        return axios.request(config).then(preSuccess)
-      }
-      // The Providence redux plugin should give you sane defaults. In many cases, the only thing you need to override
-      // is netCall.
-      const buildContext = {...defaultContextValues()}
-      buildContext.client.deriveSingle = ({response, state}: DeriveSingleArgs) => {
-        // The test API we'll be using has a 'data' attribute within the JSON data which contains the real data.
-        return response.data.data
-      }
-      const ExampleComponent = () => <div />
+    // The Providence redux plugin should give you sane defaults. In many cases, the only thing you need to override
+    // are the client functions.
+    const buildContext = {...defaultContextValues()}
 
-      ReactDOM.render(
-        <Provider store={store}>
-          <ProvidenceContext.Provider value={buildContext}>
-            <ExampleComponent />
-          </ProvidenceContext.Provider>
-        </Provider>,
-        // For this example, we're assuming this code will run in an HTML document with a div with an id of 'root'.
-        document.getElementById('root'),
-      );
+    buildContext.client.netCall = <T, K = T>(options: NetCallOptions<T>): Promise<AxiosResponse<K>> => {
+      // You'll want to add whatever other Axios configuration arguments you need for your API here. That will likely
+      // include things like Authorization headers. Read the Axios documentation for more information.
+      return axios.request(options)
+    }
+    buildContext.client.deriveSingle = ({response}: DeriveSingleArgs) => {
+      // The test API we'll be using has a 'data' attribute within the JSON data which contains the real data.
+      return response.data.data
+    }
+    const ExampleComponent = () => <div />
+
+    ReactDOM.render(
+      <Provider store={store}>
+        <ProvidenceContext.Provider value={buildContext}>
+          <ExampleComponent />
+        </ProvidenceContext.Provider>
+      </Provider>,
+      // For this example, we're assuming this code will run in an HTML document with a div with an id of 'root'.
+      document.getElementById('root'),
+    );
 
 .. tabbed:: JavaScript
 
-   .. code-block:: jxs
+   .. code-block:: jsx
 
      import ReactDOM from 'react-dom'
      import axios, {AxiosResponse} from 'axios'
@@ -67,16 +67,16 @@ Now that we have our prerequisites, let's set up a very basic project:
      // To begin using Providence, we need to initialize a dynamic module store:
      const store = createStore({})
 
-     const netCall = (options) => {
-       // You'll want to add whatever other Axios configuration arguments you need for your API here. That will likely
-       // include things like Authorization headers. Read the Axios documentation for more information.
-       const config = {...options, preSuccess}
-       return axios.request(config).then(preSuccess)
-     }
-     // The Providence redux plugin should give you sane defaults. In most cases, the only thing you need to override
-     // is netCall.
-     const buildContext = {...defaultContextValues(), netCall}
-     buildContext.client.deriveSingle = ({request, state}) => {
+    // The Providence redux plugin should give you sane defaults. In many cases, the only thing you need to override
+    // are the client functions.
+    const buildContext = {...defaultContextValues()}
+
+    buildContext.client.netCall = (options) => {
+      // You'll want to add whatever other Axios configuration arguments you need for your API here. That will likely
+      // include things like Authorization headers. Read the Axios documentation for more information.
+      return axios.request(options)
+    }
+     buildContext.client.deriveSingle = ({request}) => {
        // The test API we'll be using has a 'data' attribute within the JSON data which contains the real data.
        return response.data.data
      }
