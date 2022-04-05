@@ -96,6 +96,14 @@ export interface SingleController<T> extends BaseController<BaseSingleModule<T>>
    */
   makeReady: (val: T) => void,
   /**
+   * Initialize a patcher's settings. You might need this if the object returned from your initial fetching is
+   * incomplete and does not have the field you want to add a patcher for, or if you need to initialize a patcher
+   * without fetching the remote resource for some reason.
+   */
+  initializePatcherSettings: <AttrName extends keyof T>(
+    attrName: AttrName,
+  ) => void,
+  /**
    * Set one of the patcher's settings. The single module keeps all the data for its patchers, rather than creating
    * a new module for each patcher.
    *
@@ -113,13 +121,7 @@ export interface SingleController<T> extends BaseController<BaseSingleModule<T>>
   getPatcherSetting: <AttrName extends keyof PatchersRoot<T>, Setting extends keyof PatcherState<T, AttrName>>(
     attrName: AttrName, setting: Setting,
   ) => PatcherState<T, AttrName>[Setting]
-  /**
-   * Set empty/default variables for this patcher. Used on initialization, since no patchers are known to be needed
-   * until runtime.
-   *
-   * @private
-   */
-  ensurePatcherSettings: (attrName: keyof PatchersRoot<T>) => void,
+
   /**
    * getter/setter to indicate that :js:attr:`x <SingleController.x>` is initialized and ready to be interacted with.
    * Mostly set internally, but can be explicitly set during testing.

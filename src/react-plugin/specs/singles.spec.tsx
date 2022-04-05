@@ -5,10 +5,28 @@ import {SingleState} from '../../base/singles/types/SingleState'
 import {useSingle} from '../index'
 import {useLayoutEffect} from 'react'
 import mockAxios from 'jest-mock-axios'
+import {PatchersRoot} from '../../base/singles/types/PatchersRoot'
+import {initialPatcherState} from '../../base/singles/patcher'
 
 let store: IModuleStore<any>
 
+// Adds initial patcher settings to state from runtime data if they don't already exist.
+export const patchersFromObject = <T,>(x: Partial<T>) => {
+  const result: Partial<PatchersRoot<T>> = {}
+  for (const key of Object.keys(x)) {
+    const item = key as string & keyof typeof x
+    result[item] = initialPatcherState()
+  }
+  return result as PatchersRoot<T>
+}
+
 export function singleState(name = 'single.test', overrides?: Partial<SingleState<any>>) {
+  let patchers: PatchersRoot<any>
+  if (overrides && overrides.x) {
+    patchers = patchersFromObject(overrides.x)
+  } else {
+    patchers = {}
+  }
   return {
     [name]: {
       name,
@@ -20,7 +38,7 @@ export function singleState(name = 'single.test', overrides?: Partial<SingleStat
       persistent: false,
       ready: false,
       x: null,
-      patchers: {},
+      patchers,
       errors: {status: '', messages: []},
       ...overrides,
     },

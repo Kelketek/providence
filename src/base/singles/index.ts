@@ -31,6 +31,16 @@ export const singleDefaults = () => {
   }
 }
 
+// Adds initial patcher settings to state from runtime data if they don't already exist.
+export const updatePatchers = <T>(state: SingleState<T>, x: Partial<T>) => {
+  for (const key of Object.keys(x)) {
+    const item = key as keyof typeof x
+    if (!state.patchers[item]) {
+      state.patchers[item] = initialPatcherState<typeof x, typeof item>() as PatcherState<T, keyof typeof x>
+    }
+  }
+}
+
 export function buildSingle<T>(globalOptions: GlobalOptions): (options: SingleModuleOptions<T>) => BaseSingleModule<T> {
   return (options: SingleModuleOptions<T>) => {
     // An AbortController is not something which can be serialized and referred to later.
@@ -41,6 +51,9 @@ export function buildSingle<T>(globalOptions: GlobalOptions): (options: SingleMo
     const cancel = {controller: new AbortController()}
     const defaults = singleDefaults()
     const initialState: SingleState<T> = {...defaults, ...options}
+    if (initialState.x) {
+      updatePatchers(initialState, initialState.x)
+    }
     const module: BaseSingleModule<T> = {
       state: initialState,
       mutations: {
@@ -51,31 +64,32 @@ export function buildSingle<T>(globalOptions: GlobalOptions): (options: SingleMo
             throw Error('Cannot update a null singleton.')
           }
           Object.assign(state.x, x)
+          updatePatchers(state, x)
         },
         setX(state: SingleState<T>, x: T | null) {
           // Completely replaces the singleton.
           state.x = x
+          if (x) {
+            updatePatchers(state, x)
+          }
         },
         setDeleted(state: SingleState<T>, val: boolean) {
           state.deleted = val
         },
-        ensurePatcherSettings(state: SingleState<T>, attrName: keyof PatchersRoot<T>) {
-          if (!state.patchers[attrName]) {
-            state.patchers[attrName] = initialPatcherState<T, typeof attrName>()
+        initializePatcherSettings(state: SingleState<T>, attrName) {
+          // Use this function if you need to add a patcher at runtime manually. In well-designed systems, this is
+          // unlikely to be needed. This function does nothing if the attribute's patcher is already initialized.
+          if (state['patchers'][attrName]) {
+            return
           }
+          state['patchers'][attrName] = initialPatcherState()
         },
         setPatcherSetting<AttrName extends keyof PatchersRoot<T>, Setting extends keyof PatcherState<T, AttrName>>(state: SingleState<T>, fieldUpdate: FieldUpdate<T, AttrName, Setting>) {
-          // Patchers are not initialized when creating the module, since the structure of the object isn't known at RunTime, but
-          // is known by the typechecker. We thus ensure the state lazily when committing updates.
-          const defaults = initialPatcherState<T, AttrName>()
           // If you want to be sure that this state is available, you should call ensurePatcherSettings once you know
           // a property should exist. We do this in the patcher upon initialization. We also set it here for type safety
           // if it doesn't exist, but in practice, this 'if' statement should never evaluate true unless you're calling
           // this mutation directly instead of from the patcher.
           /* istanbul ignore if */
-          if (state['patchers'][fieldUpdate.attrName] === undefined) {
-            state['patchers'][fieldUpdate.attrName] = {...defaults}
-          }
           (state['patchers'][fieldUpdate.attrName] as PatcherState<T, AttrName>)[fieldUpdate.settingName] = fieldUpdate.val
         }
       },
