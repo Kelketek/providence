@@ -14,11 +14,11 @@ export interface SingleMutations<T> {
   updateX(state: SingleState<T>, x: Partial<T>): void,
   setX(state: SingleState<T>, x: T | null): void,
   setDeleted(state: SingleState<T>, val: boolean): void,
+  initializePatcherSettings(state: SingleState<T>, attrName: keyof T): void,
   setParams(state: SingleState<T>, params: QueryParams|null): void,
   setErrors(state: SingleState<T>, errors: ErrorTracking): void,
   resetErrors(state: SingleState<T>): void,
   setPatcherSetting<AttrName extends keyof PatchersRoot<T>, Setting extends keyof PatcherState<T, AttrName>>(
     state: SingleState<T>, fieldUpdate: FieldUpdate<T, AttrName, Setting>,
   ): void,
-  ensurePatcherSettings(state: SingleState<T>, attrName: keyof PatchersRoot<T>): void,
 }

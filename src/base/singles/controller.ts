@@ -77,8 +77,8 @@ export function singleControllerFactory<T>({store, globalOptions}: SingleFactory
     updateX(val: Partial<T>) {
       controller.commit('updateX', val)
     },
-    ensurePatcherSettings(attrName: keyof PatchersRoot<T>) {
-      controller.commit('ensurePatcherSettings', attrName)
+    initializePatcherSettings(attrName: keyof T) {
+      controller.commit('initializePatcherSettings', attrName)
     },
     setPatcherSetting<AttrName extends keyof PatchersRoot<T>, Setting extends keyof PatcherState<T, AttrName>>(fieldUpdate: FieldUpdate<T, AttrName, Setting>) {
       controller.commit('setPatcherSetting', fieldUpdate)

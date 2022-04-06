@@ -169,6 +169,6 @@ export const patcherFactory = <T, AttrName extends keyof T>({controller, globalO
 
   patcher.debouncedRawSet = debounce(patcher.rawSet, 250, {trailing: true})
   globalOptions.transformers.patcher(patcher)
-  controller.ensurePatcherSettings(attrName)
+  controller.initializePatcherSettings(attrName)
   return patcher
 }
