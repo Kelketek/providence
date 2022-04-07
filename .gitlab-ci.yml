@@ -8,7 +8,7 @@ eslint:
   stage: quality
   image: node:17-alpine
   script:
-    - apk add make
+    - apk add git make bash inotify-tools
     - make install_prereqs
     - make quality
 
@@ -16,7 +16,7 @@ tests-node17:
   stage: test
   image: node:17-alpine
   script:
-    - apk add make
+    - apk add git make bash inotify-tools
     - make install_prereqs
     - make test
 
@@ -24,7 +24,7 @@ tests-node16:
   stage: test
   image: node:16-alpine
   script:
-    - apk add make
+    - apk add git make bash inotify-tools
     - make install_prereqs
     - make test
 
@@ -32,9 +32,8 @@ documentation:
   stage: test
   image: nikolaik/python-nodejs:python3.8-nodejs16-alpine
   script:
+    - apk add git make bash inotify-tools
     - npm install
-    - apk add git
-    - apk add make
     - pip install -r docs/requirements.txt
     - pip install docs/
     - cd docs && make html
@@ -45,7 +44,7 @@ npm_push:
   only:
     - master
   script:
-    - apk add make
+    - apk add git make bash inotify-tools
     - make install_prereqs
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - make publish

@@ -9,7 +9,7 @@ This function is used to provide a promise for something which is already known.
 to refetch a resource if we already have it, but the client code may expect a promise rather than a return value.
  */
 import axios, {AxiosError, AxiosResponse} from 'axios'
-import {FormError} from '../forms/types/FormError'
+import {FieldErrors} from '../forms/types/FieldErrors'
 import {FormErrorSet} from '../forms/types/FormErrorSet'
 import {NetCallOptions} from '../types/NetCallOptions'
 import {PaginationResult} from '../types/PaginationResult'
@@ -17,6 +17,8 @@ import {DeriveListArgs} from '../types/DeriveListArgs'
 import {DeriveSingleArgs} from '../types/DeriveSingleArgs'
 import {ListState} from '../lists/types/ListState'
 import {ListController} from '../lists/types/ListController'
+import {DeriveFormArgs} from '../types/DeriveFormArgs'
+import isEqual from 'lodash/isEqual'
 
 export function immediate<T>(val: T): Promise<T> {
   return new Promise<T>((resolve) => {
@@ -122,7 +124,7 @@ export function createPath<T>(start: any, path: string[], entryFactory: () => T)
 // If you've made some post request that fails because of a missing field,
 // there's a coding error that's gone undetected. (Hopefully) the user will nag us about it
 // with this message.
-export function missingFieldError<T>(errors: FormError<T>): string[] {
+export function missingFieldError<T>(errors: FieldErrors<T>): string[] {
   const result: string[] = []
   for (const key of Object.keys(errors)) {
     result.push(
@@ -140,15 +142,16 @@ const ERROR_TRANSLATION_MAP: {[key: string]: string} = {
 
 export function baseDeriveErrors<T>(error: AxiosError, knownFields: Array<keyof T>): FormErrorSet {
   const errorSet: FormErrorSet<T> = {
+    status: `${error.code || ''}`,
+    messages: [],
     fields: {},
-    errors: [],
   }
   if (!error.response || !error.response.data || !(isObject(error.response.data))) {
     if (error.code && ERROR_TRANSLATION_MAP[error.code]) {
-      errorSet.errors.push(ERROR_TRANSLATION_MAP[error.code])
+      errorSet.messages.push(ERROR_TRANSLATION_MAP[error.code])
       return errorSet
     }
-    errorSet.errors = [ERROR_TRANSLATION_MAP.UNKNOWN]
+    errorSet.messages = [ERROR_TRANSLATION_MAP.UNKNOWN]
     return errorSet
   }
   const unresolved: {[key: string]: string[]} = {}
@@ -160,10 +163,10 @@ export function baseDeriveErrors<T>(error: AxiosError, knownFields: Array<keyof 
     }
   }
   if (error.response.data.detail) {
-    errorSet.errors.push(error.response.data.detail)
+    errorSet.messages.push(error.response.data.detail)
   }
   if (Object.keys(unresolved).length) {
-    errorSet.errors.push(...missingFieldError(unresolved))
+    errorSet.messages.push(...missingFieldError(unresolved))
   }
   return errorSet
 }
@@ -202,6 +205,14 @@ export function baseDeriveList<T>({response, state}: DeriveListArgs<T>): Paginat
  * framework, which places the object right at the root of the data response by default.
  */
 export function baseDeriveSingle<T>({response}: DeriveSingleArgs<T>): T {
+  return response.data
+}
+
+/**
+ * Example function for deriving data from the Axios response after submitting a form. We'll assume for this example
+ * that its structure will be the same as for deriving single data.
+ */
+export function baseDeriveForm<T, K = T>({response}: DeriveFormArgs<T>): K {
   return response.data
 }
 
@@ -267,3 +278,27 @@ export const baseGetTotalPages = <T>(state: ListState<T>) => {
   }
   return null
 }
+
+
+/**
+ * Wraps a function for memoization. The resulting function will return the same result
+ * if given the same arguments.
+ */
+export const memoizer = <Func extends (...args: any[]) => any>(sourceFunc: Func) => {
+  let cached: ReturnType<Func>
+  let lastArgs: any[]
+  return (...args: any[]) => {
+    if (lastArgs !== undefined && isEqual(args, lastArgs)) {
+      return cached
+    }
+    lastArgs = args
+    cached = sourceFunc(...args)
+    return cached
+  }
+}
+
+/**
+ * No-op passthrough function which returns what is handed to it. Useful to explicitly silence promise chains.
+ * @param input Whatever the promise resolves to. This is also returned by the function.
+ */
+export const nop = (input: unknown) => input

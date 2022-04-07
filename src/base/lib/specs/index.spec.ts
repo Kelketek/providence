@@ -163,7 +163,7 @@ describe('baseDeriveErrors', () => {
         }}), ['stuff', 'things'])
     expect(result.fields.stuff).toEqual(['Not enough stuff'])
     expect(result.fields.things).toBe(undefined)
-    expect(result.errors).toEqual([])
+    expect(result.messages).toEqual([])
   })
   it('Adds to the general errors when receiving a field error it does not recognize', () => {
     const result = baseDeriveErrors(mockError(
@@ -172,7 +172,7 @@ describe('baseDeriveErrors', () => {
           data: {stuff: ['Not enough stuff']}
         }}), ['things'])
     expect(result.fields.stuff).toEqual(undefined)
-    expect(result.errors).toEqual([
+    expect(result.messages).toEqual([
       'Whoops! We had a coding error. Please contact support and tell them the following: stuff: Not enough stuff',
     ])
   })
@@ -183,7 +183,7 @@ describe('baseDeriveErrors', () => {
           data: {detail: 'Not enough stuff'}
         }}), ['things'])
     expect(result.fields.stuff).toBe(undefined)
-    expect(result.errors).toEqual([
+    expect(result.messages).toEqual([
       'Not enough stuff',
     ])
   })
@@ -193,7 +193,7 @@ describe('baseDeriveErrors', () => {
         code: 'ECONNABORTED',
       }), ['things'])
     expect(result.fields.stuff).toBe(undefined)
-    expect(result.errors).toEqual([
+    expect(result.messages).toEqual([
       'Timed out or aborted. Please try again or contact support.',
     ])
   })
@@ -203,7 +203,7 @@ describe('baseDeriveErrors', () => {
         code: 'EPLURIBUSUNUM',
       }), ['things'])
     expect(result.fields.stuff).toBe(undefined)
-    expect(result.errors).toEqual([
+    expect(result.messages).toEqual([
       'We had an issue contacting the server. Please try again later.',
     ])
   })

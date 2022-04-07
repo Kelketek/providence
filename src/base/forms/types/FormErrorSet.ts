@@ -1,6 +1,7 @@
-import {FormError} from './FormError'
+import {FieldErrors} from './FieldErrors'
 
 export interface FormErrorSet<T = any> {
-  errors: string[],
-  fields: Partial<FormError<T>>
+  status: string,
+  messages: string[],
+  fields: Partial<FieldErrors<T>>
 }

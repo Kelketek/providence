@@ -1,6 +1,6 @@
 {
   "name": "@opencraft/providence",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "An abstraction layer for common web use cases (forms, singletons, lists) for use with reactive state-management backends.",
   "main": "index.js",
   "scripts": {
@@ -48,6 +48,7 @@
     "@testing-library/react": "^12.1.2",
     "@types/jest": "^27.4.0",
     "@types/lodash": "^4.14.178",
+    "@types/lodash.debounce": "^4.0.6",
     "@types/react-dom": "^17.0.11",
     "@types/react-redux": "^7.1.22",
     "@types/react-test-renderer": "^17.0.1",
@@ -62,8 +63,8 @@
     "react-redux": "^7.2.6",
     "react-test-renderer": "^17.0.2",
     "ts-jest": "^27.1.2",
-    "typescript": "^4.5.5",
-    "typedoc": "^0.22.11"
+    "typedoc": "^0.22.11",
+    "typescript": "^4.5.5"
   },
   "dependencies": {
     "lodash.debounce": "^4.0.8",

@@ -46,7 +46,7 @@ export function errorSend<T, AttrName extends keyof T>(patcher: Patcher<T, AttrN
     }
     const errors = globalOptions.client.deriveErrors<T>(error, [attrName])
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    const message = (errors.fields[attrName] && errors.fields[attrName]![0]) || errors.errors[0]
+    const message = (errors.fields[attrName] && errors.fields[attrName]![0]) || errors.messages[0]
     /* eslint-enable @typescript-eslint/no-non-null-assertion */
     patcher.errors = [message]
     patcher.patching = false
@@ -58,7 +58,6 @@ export const patcherFactory = <T, AttrName extends keyof T>({controller, globalO
     get moduleType (): 'patcher' {
       return 'patcher'
     },
-    attrName,
     controller,
     cancelController: new AbortController(),
     setSetting<Setting extends keyof PatcherState<T, AttrName>>(settingName: Setting, val: PatcherState<T, AttrName>[Setting]) {
@@ -66,6 +65,9 @@ export const patcherFactory = <T, AttrName extends keyof T>({controller, globalO
     },
     getSetting<Setting extends keyof PatcherState<T, AttrName>>(settingName: Setting) {
       return controller.getPatcherSetting(attrName, settingName)
+    },
+    get attrName() {
+      return attrName
     },
     get cached() {
       return patcher.getSetting('cached')

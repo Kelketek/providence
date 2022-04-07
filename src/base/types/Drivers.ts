@@ -1,11 +1,6 @@
 import {ModuleFactory} from './ModuleFactory'
 import {StoreProxyFactory} from './StoreProxyFactory'
 
-/**
- * The drivers are the means by which we perform meta-operations with the client store, like adding
- * or removing a module. You should not have to set these settings unless you're making your own state management
- * library adapter.
- */
 export interface Drivers {
   /**
    * The `makeModuleFactory` function should take the upstream library's store, whatever shape it may come in, and
