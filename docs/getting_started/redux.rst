@@ -8,7 +8,7 @@ Providence uses `Redux Dynamic Modules`_ and `Redux Toolkit`_ to generate its sl
 
 .. code-block:: console
 
-    npm i -s redux-dynamic-modules react-dom axios react-redux @reduxjs/toolkit
+    npm i -s redux-dynamic-modules react-dom axios react-redux react @reduxjs/toolkit
     npm i -sD @types/react @types/react-dom @types/redux-dynamic-modules
 
 Now that we have our prerequisites, let's set up a very basic project:
