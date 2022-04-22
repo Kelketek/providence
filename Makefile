@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := oneshot
 
 install_prereqs:
-	npm install
+	npm install -D
 
 build:  # Build the NPM package.
 	rm -rvf dist
