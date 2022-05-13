@@ -13,6 +13,3 @@ Then, find your state management library below for setup instructions:
 
    React/Redux <redux>
    Vue/Vuex <vuex>
-
-
-.. _TypeScript: https://www.typescriptlang.org/

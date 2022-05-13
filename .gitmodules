@@ -1,0 +1,3 @@
+[submodule "providence-demo"]
+	path = providence-demo
+	url = https://gitlab.com/opencraft/dev/providence-demo.git

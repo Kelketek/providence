@@ -203,7 +203,7 @@ export function buildList<T>(globalOptions: GlobalOptions): (options: ListModule
             const errorSet = globalOptions.client.deriveErrors(error, [])
             const errors: ErrorTracking = {
               status: (error.code || (error.response && error.response.status) || 'UNKNOWN') + '',
-              messages: errorSet.errors,
+              messages: errorSet.messages,
             }
             commit('setErrors', errors)
             throw error

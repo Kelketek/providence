@@ -1,11 +1,12 @@
 Module Types
 ============
 
-Providence has two modules-- Singles and Lists-- with Forms planned.
+Providence has three modules which cover the most common state management needs:
 
 .. toctree::
-   :hidden:
+   :maxdepth: 1
 
    singles
    lists
+   forms
 

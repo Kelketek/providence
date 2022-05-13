@@ -1,15 +1,9 @@
 import {BaseModule} from './BaseModule'
 import {BaseController} from './BaseController'
 import {Patcher} from '../singles/types/Patcher'
+import {Fielder} from '../forms/types/Fielder'
 
-/**
- * The transformers are a set of functions that adapt the internal structure of Providence objects into something
- * the client state management libraries can use. Unless you're writing a plugin to support a new state management
- * backend, you should not need to specify these manually. The existing plugin should specify them for you.
- *
- * However, there may be some edge case, for testing or other instrumentation, where you need to spy on relevant calls
- * on all controllers, or otherwise transform their data. You can do so here if you need such functionality.
- */
+
 export interface Transformers {
   /**
    * Transforms a providence module into a pluggable format the target state manager will understand.
@@ -33,4 +27,11 @@ export interface Transformers {
    * @param patcher A dynamically generated Patcher.
    */
   patcher: <T extends Patcher<any, any>>(patcher: T) => T,
+  /**
+   * Transforms a generated fielder in any way necessary to provide its essential functions to the target state
+   * manager.
+   *
+   * @param fielder A dynamically generated Fielder.
+   */
+  fielder: <T extends Fielder<any, any>>(patcher: T) => T,
 }

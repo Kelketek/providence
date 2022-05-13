@@ -5,7 +5,8 @@ import {QueryParams} from '../../types/QueryParams'
 * data of both the singleton itself and meta information about its status and how it is to be managed.
 */
 export interface SingleModuleOptions<T> {
-  /** The name of the module. Don't specify this-- it will be automatically supplied internally elsewhere.
+  /**
+   * The name of the module. Don't specify this-- it will be automatically supplied internally elsewhere.
    *
    * @private
    */

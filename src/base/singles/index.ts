@@ -144,7 +144,7 @@ export function buildSingle<T>(globalOptions: GlobalOptions): (options: SingleMo
             const errorSet = globalOptions.client.deriveErrors(error, [])
             const errors: ErrorTracking = {
               status: (error.code || (error.response && error.response.status) || 'UNKNOWN') + '',
-              messages: errorSet.errors,
+              messages: errorSet.messages,
             }
             commit('setErrors', errors)
             throw error

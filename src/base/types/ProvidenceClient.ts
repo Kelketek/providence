@@ -5,6 +5,7 @@ import {DeriveListArgs} from './DeriveListArgs'
 import {DeriveSingleArgs} from './DeriveSingleArgs'
 import {Paginator} from './Paginator'
 import {FormErrorSet} from '../forms/types/FormErrorSet'
+import {DeriveFormArgs} from './DeriveFormArgs'
 
 
 export interface ProvidenceClient {
@@ -21,6 +22,10 @@ export interface ProvidenceClient {
    * Takes an AxiosResponse from the server and returns a list with pagination info.
    */
   deriveList<T>(args: DeriveListArgs<T>): PaginationResult<T>,
+  /**
+   * Takes an AxiosResponse from the server and returns the data from the form endpoint.
+   */
+  deriveForm<T, K = T>(args: DeriveFormArgs<T>): K,
   /**
    * A function that takes an error raised by netCall and returns a FormErrorSet.
    *

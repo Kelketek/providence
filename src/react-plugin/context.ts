@@ -6,7 +6,7 @@ import {
   baseDeriveList,
   baseDeriveSingle,
   baseInitializePagination,
-  baseGetCurrentPage, baseSetCurrentPage, baseGetTotalPages
+  baseGetCurrentPage, baseSetCurrentPage, baseGetTotalPages, baseDeriveForm
 } from '../base/lib'
 import {ProvidenceRegistries} from '../base/registry/types/ProvidenceRegistries'
 import {IModule, IModuleStore} from 'redux-dynamic-modules'
@@ -15,6 +15,7 @@ import {MakeModuleOptions} from '../base/registry/types/MakeModuleOptions'
 import {createSlice, ReducersMapObject} from '@reduxjs/toolkit'
 import {GlobalOptions} from '../base/types/GlobalOptions'
 import {makeProxyFactory} from './storeProxy'
+import {email} from '../base/forms/validators'
 
 
 export const makeModuleFactory = <T extends AnySlicer>(store: IModuleStore<any>) => {
@@ -40,12 +41,13 @@ export const makeModuleFactory = <T extends AnySlicer>(store: IModuleStore<any>)
 }
 
 export const defaultContextValues = (): GlobalOptions => {
-  const registryRoot: ProvidenceRegistries = {single: {}, list: {}}
+  const registryRoot: ProvidenceRegistries = {single: {}, list: {}, form: {}}
   return {
     client: {
       netCall: baseCall,
       deriveSingle: baseDeriveSingle,
       deriveList: baseDeriveList,
+      deriveForm: baseDeriveForm,
       deriveErrors: baseDeriveErrors,
       paginator: {
         initializePagination: baseInitializePagination,
@@ -58,6 +60,10 @@ export const defaultContextValues = (): GlobalOptions => {
       module: moduleTransformer,
       controller: (val) => val,
       patcher: (val) => val,
+      fielder: (val) => val,
+    },
+    validators: {
+      email,
     },
     drivers: {makeModuleFactory, makeProxyFactory},
     // Use a function here to avoid the registry's updating triggering an update to all components globally.

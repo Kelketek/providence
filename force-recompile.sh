@@ -15,8 +15,9 @@
 # Follow the directions within that repo to set it up. Then, run this script.
 set -e
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-DEMO_DIR="$SCRIPT_DIR/../providence-demo/"
+DEMO_DIR="$SCRIPT_DIR/providence-demo/"
 HASH=''
+source ~/.nvm/nvm.sh
 
 trap ctrl_c INT
 
@@ -44,16 +45,15 @@ fi
 
 
 cd "$DEMO_DIR"
+npm install "$PACKAGE_PATH"
 npm run start &
-inotifywait -mrq -e modify "$SCRIPT_DIR/src" | \
+inotifywait -rqm -e modify -e create -e close_write "$SCRIPT_DIR/src" | \
 while read file
 do
-  # This will run once for every file modified. The script could probably be made more efficient,
-  # but usually you're only editing one file at a time anyway.
+  # Eat away several changes done in one go.
+  echo "Skipping $(timeout 1 cat | wc -l) further changes"
 	cd "$SCRIPT_DIR"
-	make build
-	cd dist
-	npm pack
+	make tarball
 	PACKAGE_PATH="$(package_path)"
 	NEW_HASH=$(md5sum "$PACKAGE_PATH")
 	if [[ ! ("$NEW_HASH" == "$HASH") ]]; then
