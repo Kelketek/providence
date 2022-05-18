@@ -142,6 +142,11 @@ With providence, all of the state management, error handling, and editing can be
 
 Providence allows you to instantiate fully functional modules in your data store, and gives you controller objects that make your life easy. Interested? :ref:`Click here to get started! <getting_started/index:Getting Started>`
 
+Demo
+----
+
+A demo is available `here <https://providence-demo.opencraft.com/>`_. We recommend viewing its `source code <https://gitlab.com/opencraft/dev/providence-demo/>`_ alongside it.
+
 History
 -------
 
@@ -156,3 +161,4 @@ Providence is based on the initial state management code written by Fox Danger P
    concepts
    module_types/index
    interfaces
+   development
