@@ -8,16 +8,22 @@
 # This script could stand to be cleaned up more (or, hopefully, we can find a better way to do this)
 # but it's already taken a good chunk of time to get it here, and it's good enough for now.
 #
-# To use this script:
-#     sudo apt install inotify-tools
-# Then clone the demo repo into the parent directory of the current repo:
-#     cd .. && git clone https://gitlab.com/opencraft/dev/providence-demo
-# Follow the directions within that repo to set it up. Then, run this script.
+# To use this script, build the initial tarball and install the demo prereqs:
+#	    make demo_prereqs
+# Then, to monitor for changes while running the demo code and installing updates:
+#     make demo_loop
+# If you end up interrupting the loop before a new tarball is built, you can force the rebuilding of
+# the tarball with:
+#     make tarball
 set -e
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 DEMO_DIR="$SCRIPT_DIR/providence-demo/"
+OS="$(uname -s)"
 HASH=''
 source ~/.nvm/nvm.sh
+if (which gtimeout); then
+  alias timeout=gtimeout
+fi
 
 trap ctrl_c INT
 
@@ -37,6 +43,15 @@ function kill_script() {
   sleep 1
 }
 
+function watch_changes() {
+  if [[ "$OS" == "Linux" ]]; then
+    inotifywait -rqm -e modify -e create -e close_write "$SCRIPT_DIR/src"
+  fi
+  if [[ "$OS" == "Darwin" ]]; then
+    fswatch "$SCRIPT_DIR/src"
+  fi
+}
+
 PACKAGE_PATH="$(package_path)"
 
 if [[ -f "$PACKAGE_PATH" ]]; then
@@ -47,19 +62,19 @@ fi
 cd "$DEMO_DIR"
 npm install "$PACKAGE_PATH"
 npm run start &
-inotifywait -rqm -e modify -e create -e close_write "$SCRIPT_DIR/src" | \
+watch_changes | \
 while read file
 do
   # Eat away several changes done in one go.
   echo "Skipping $(timeout 1 cat | wc -l) further changes"
-	cd "$SCRIPT_DIR"
-	make tarball
-	PACKAGE_PATH="$(package_path)"
-	NEW_HASH=$(md5sum "$PACKAGE_PATH")
-	if [[ ! ("$NEW_HASH" == "$HASH") ]]; then
+  cd "$SCRIPT_DIR"
+  make tarball
+  PACKAGE_PATH="$(package_path)"
+  NEW_HASH=$(md5sum "$PACKAGE_PATH")
+  if [[ ! ("$NEW_HASH" == "$HASH") ]]; then
     cd "$DEMO_DIR"
     # NOTE: This will change package.json in the demo project. Don't commit this change!
-    npm install "$PACKAGE_PATH"
+    npm install --no-save "$PACKAGE_PATH"
     rm -rvf node_modules/.cache
     # This will, unfortunately, launch a tab window each time.
     kill_script

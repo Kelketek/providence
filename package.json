@@ -1,6 +1,6 @@
 {
   "name": "@opencraft/providence",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "An abstraction layer for common web use cases (forms, singletons, lists) for use with reactive state-management backends.",
   "main": "index.js",
   "scripts": {
