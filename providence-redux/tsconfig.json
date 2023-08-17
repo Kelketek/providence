@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "jsx": "react-jsx",
+    "module": "commonjs",
+    "rootDir": "./src",
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "paths": {
+      "@opencraft/providence/*": ["../../../providence/src/base/*"]
+    },
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "typedocOptions": {
+    "entryPoints": ["src/"],
+    "entryPointStrategy": "Expand",
+    "out": "docs/typedoc",
+    "exclude": ["**/node_modules/**", "dist/**"]
+  }
+}

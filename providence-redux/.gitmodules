@@ -1,0 +1,3 @@
+[submodule "src/providence"]
+	path = src/providence
+	url = https://gitlab.com/opencraft/dev/providence.git

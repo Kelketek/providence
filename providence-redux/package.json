@@ -1,0 +1,79 @@
+{
+  "name": "@opencraft/providence-redux",
+  "description": "The official redux plugin for the Eye of Providence state management library.",
+  "version": "0.1.0",
+  "main": "index.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:clear": "jest --clearCache",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@types/jest": "^29.5.4",
+    "@types/lodash": "^4.14.197",
+    "@types/react-dom": "^17.0.11",
+    "@types/react-redux": "^7.1.22",
+    "@types/react-test-renderer": "^17.0.1",
+    "@types/uuid": "^9.0.2",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
+    "esbuild": "^0.19.2",
+    "eslint": "^8.48.0",
+    "jest": "^29.6.4",
+    "jest-mock-axios": "^4.7.2",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.1.2",
+    "react-test-renderer": "^18.2.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/opencraft/dev/providence.git"
+  },
+  "author": {
+    "name": "Fox Piacenti",
+    "email": "fox@artconomy.com",
+    "url": "https://artconomy.com/"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://gitlab.com/opencraft/dev/providence/issues"
+  },
+  "homepage": "https://gitlab.com/opencraft/dev/providence",
+  "contributors": [
+    {
+      "name": "OpenCraft",
+      "contact": "contact@opencraft.com",
+      "url": "https://opencraft.com/"
+    },
+    {
+      "name": "Artconomy",
+      "contact": "contact@artconomy.com",
+      "url": "https://artconomy.com/"
+    }
+  ],
+  "keywords": [
+    "state-management",
+    "redux"
+  ],
+  "dependencies": {
+    "@opencraft/providence": "file:../providence",
+    "jest-environment-jsdom": "^29.6.4",
+    "redux-dynamic-modules": "^5.2.3",
+    "uuid": "^9.0.0"
+  },
+  "peerDependencies": {
+    "@reduxjs/toolkit": "^1.9.5",
+    "axios": "^1.5.0",
+    "redux-dynamic-modules": "^5.2.3"
+  }
+}
