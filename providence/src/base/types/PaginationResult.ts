@@ -1,7 +1,7 @@
 import {PageInfo} from '../lists/types/PageInfo'
 
 /**
- * Structure returned by a :js:attr:`deriveList function<ProvidenceClient.deriveList>`.
+ * Structure returned by a [deriveList function](../interfaces/types_ProvidenceClient.ProvidenceClient.md#deriveList)`.
  */
 export interface PaginationResult<T> {
   /**

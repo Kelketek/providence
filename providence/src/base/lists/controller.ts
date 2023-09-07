@@ -51,6 +51,9 @@ export function listControllerFactory<T>({store, globalOptions}: ListFactoryArgs
     get rawState() {
       return moduleState()
     },
+    get keyProp() {
+      return this.attr('keyProp')
+    },
     get pageInfo() {
       return this.attr('pageInfo')
     },

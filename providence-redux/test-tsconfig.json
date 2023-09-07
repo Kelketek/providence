@@ -12,5 +12,16 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true
-  }
+  },
+  "typedocOptions": {
+    "entryPoints": ["staging/"],
+    "entryPointStrategy": "Expand",
+    "out": "docs/typedoc",
+    "exclude": ["**/node_modules/**", "dist/**", "staging/core/**", "**/__mocks__/**"],
+    "plugin": "typedoc-plugin-markdown",
+    "hideBreadcrumbs": true,
+    "hideInPageTOC": true,
+    "allReflectionsHaveOwnDocument": true
+  },
+  "exclude": ["src/**", "dist/**"]
 }

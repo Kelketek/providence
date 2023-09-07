@@ -16,7 +16,7 @@ export interface BaseController<ModuleDefinition extends AnyModule> {
   uid: string,
   /**
    * The name of the dynamically created module. This is a dot separated name. You can construct an escaped, valid
-   * name with use of the :js:func:`flattenNamespace` function.
+   * name with use of the [flattenNamespace](../functions/lib.flattenNamespace.md) function.
    */
   name: string,
   /**

@@ -47,6 +47,9 @@ quality:
 test:
 	npm run test
 
+generate_docs: install_prereqs
+	npx typedoc
+
 publish: install_prereqs build qa
 	cd dist && npm publish --access public
 

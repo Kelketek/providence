@@ -45,13 +45,20 @@ quality:
 demo_loop:
 	bash -l ./force-recompile.sh
 
-oneshot: install_prereqs build
-
-test:
+stage:
 	rm -rf staging
 	cp -a src staging
 	node ../providence/test_munger.js '@opencraft/providence' staging/core staging
 	cp -a ../providence/src/base staging/core
+	# Clear any precompiled files. Compiler might skip them because of modification time.
+	find staging/core -name '*.js' -delete
+
+generate_docs: install_prereqs stage
+	npx typedoc --tsconfig test-tsconfig.json
+
+oneshot: install_prereqs build
+
+test: stage
 	npm run test
 
 publish: install_prereqs build qa

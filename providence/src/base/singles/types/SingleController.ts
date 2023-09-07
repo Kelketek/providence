@@ -19,12 +19,12 @@ export interface SingleController<T> extends BaseController<BaseSingleModule<T>>
   endpoint: string,
   /**
    * The data structure you're tracking in the single module. It can also be null if you've neither fetched nor preset
-   * its value. This is a getter and setter, so you can entirely replace :js:attr:`x <SingleController.x>` if you like.
+   * its value. This is a getter and setter, so you can entirely replace [x](#x) if you like.
    *
    * Note that you should not mutate the attributes of x directly. Instead, if you need to change
-   * :js:attr:`x <SingleController.x>`, use :js:attr:`updateX <SingleController.updateX>`,
-   * :js:attr`setX <SingleController.setX>`, set the :js:attr:`x <SingleController.x>` setter directly, or use the
-   * :ref:`module_types/singles:Patchers`.
+   * [x](#x), use [updateX](#updatex),
+   * [setX](#setx), set the [x](#x) setter directly, or use the
+   * [Patchers](../../../module_types/singles.md#Patchers)`.
    */
   x: T | null,
   /**
@@ -39,16 +39,16 @@ export interface SingleController<T> extends BaseController<BaseSingleModule<T>>
    *     }
    *
    *   Then this object will contain the keys `id`, `name`, and `fun`. Each of these attributes will be a
-   *   :js:class:`Patcher` bound to its specific field.
+   *   [Patcher](../interfaces/singles_types_Patcher.Patcher.md) bound to its specific field.
    *
    */
   p: BoundPatchers<T>,
   /**
-   * Completely replace :js:attr:`x <SingleController.x>`.
+   * Completely replace [x](#x).
    */
   setX: (val: T | null) => void,
   /**
-   * Update the value of :js:attr:`x <SingleController.x>` in place by setting a subset of its values.
+   * Update the value of [x](#x) in place by setting a subset of its values.
    */
   updateX: (val: Partial<T>) => void,
   /**
@@ -57,42 +57,42 @@ export interface SingleController<T> extends BaseController<BaseSingleModule<T>>
    */
   getOnce: () => void,
   /**
-   * Performs a get request. Will update the value of :js:attr:`x <SingleController.x>` based on what it retrieves, and return a promise
+   * Performs a get request. Will update the value of [x](#x) based on what it retrieves, and return a promise
    * containing the new value.
    */
   get: () => Promise<T>,
   /**
-   * Sends a patch request. Updates :js:attr:`x <SingleController.x>` with the value returned from the server, and returns a promise
+   * Sends a patch request. Updates [x](#x) with the value returned from the server, and returns a promise
    * containing the new value.
    */
   patch: (val: Partial<T>) => Promise<T>,
   /**
-   * Sends a put request. Updates :js:attr:`x <SingleController.x>` with the value returned from the server, and returns a promise
+   * Sends a put request. Updates [x](#x) with the value returned from the server, and returns a promise
    * containing the new value.
    */
   put: (val: Partial<T>) => Promise<T>,
   /**
-   * Sends a post request. DOES NOT update :js:attr:`x <SingleController.x>` with the value returned from the server. Returns a promise
+   * Sends a post request. DOES NOT update [x](#x) with the value returned from the server. Returns a promise
    * containing the value the server sent back.
    */
   post: <I, O = I>(val: I) => Promise<AxiosResponse<O>>,
   /**
-   * Sends a deletion request to the server. If successful, marks :js:attr:`x <SingleController.x>` as null and sets
-   * the :js:attr:`deleted <SingleController.deleted>` flag to `true` and sets the
-   * :js:attr:`deleted <SingleController.deleted>` flag to `true`.
+   * Sends a deletion request to the server. If successful, marks [x](#x) as null and sets
+   * the [deleted](#deleted) flag to `true` and sets the
+   * [deleted](#deleted) flag to `true`.
    */
   delete: () => Promise<void>,
   /**
-   * Retrieves the stored error information from our last attempt at :js:attr:`getting <SingleController.get>` the
+   * Retrieves the stored error information from our last attempt at [getting](#get) the
    * remote object.
    */
   errors: ErrorTracking,
   /**
-   * Empties out the values in :js:attr:`errors <SingleController.errors>`.
+   * Empties out the values in [errors](#errors).
    */
   resetErrors: () => void,
   /**
-   * Set x and mark :js:attr`ready <SingleController.ready>` as `true`. Mostly useful for testing.
+   * Set x and mark [ready](#ready) as `true`. Mostly useful for testing.
    */
   makeReady: (val: T) => void,
   /**
@@ -123,17 +123,17 @@ export interface SingleController<T> extends BaseController<BaseSingleModule<T>>
   ) => PatcherState<T, AttrName>[Setting]
 
   /**
-   * getter/setter to indicate that :js:attr:`x <SingleController.x>` is initialized and ready to be interacted with.
+   * getter/setter to indicate that [x](#x) is initialized and ready to be interacted with.
    * Mostly set internally, but can be explicitly set during testing.
    */
   ready: boolean,
   /**
-   * getter/setter to indicate that :js:attr:`x <SingleController.x>` is being fetched via `get` request. Can be set
+   * getter/setter to indicate that [x](#x) is being fetched via `get` request. Can be set
    * manually if needed for testing.
    */
   fetching: boolean,
   /**
-   * getter/setter to indicate that the attempt to fetch :js:attr:`x <SingleController.x>` failed. Can be set
+   * getter/setter to indicate that the attempt to fetch [x](#x) failed. Can be set
    * manually if needed for testing.
    */
   failed: boolean,

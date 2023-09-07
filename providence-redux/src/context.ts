@@ -6,7 +6,10 @@ import {
   baseDeriveList,
   baseDeriveSingle,
   baseInitializePagination,
-  baseGetCurrentPage, baseSetCurrentPage, baseGetTotalPages, baseDeriveForm
+  baseGetCurrentPage,
+  baseSetCurrentPage,
+  baseGetTotalPages,
+  baseDeriveForm,
 } from '@opencraft/providence/lib'
 import {ProvidenceRegistries} from '@opencraft/providence/registry/types/ProvidenceRegistries'
 import {IModule, IModuleStore} from 'redux-dynamic-modules'

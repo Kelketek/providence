@@ -2,7 +2,7 @@ import {QueryParams} from './QueryParams'
 import {Method} from 'axios'
 
 /**
- * NetCallOptions are the arguments for the :js:attr:`netCall <GlobalOptions.netCall>` function.
+ * NetCallOptions are the arguments for the [netCall](../interfaces/types_GlobalOptions.GlobalOptions.md#netcall) function.
  *
  * @typeParam T The type of the data being sent as JSON (or otherwise structured) data.
  */

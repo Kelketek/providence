@@ -99,9 +99,14 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "typedocOptions": {
-    "entryPoints": ["src/"],
+    "entryPoints": ["src/base"],
     "entryPointStrategy": "Expand",
     "out": "docs/typedoc",
     "exclude": ["**/node_modules/**", "dist/**"],
-  }
+    "plugin": "typedoc-plugin-markdown",
+    "hideInPageTOC": true,
+    "hideBreadcrumbs": true,
+    "allReflectionsHaveOwnDocument": true,
+  },
+  "exclude": ["dist/**", "node_modules/**"]
 }

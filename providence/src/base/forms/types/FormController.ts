@@ -80,7 +80,7 @@ export interface FormController<T> extends BaseController<BaseFormModule<T>> {
   data: T,
   /**
    * Submits the form, returning a promise from the submission. It is recommended to catch any errors from this
-   * submission with the :js:attr:`x <FormController.handleError>` function.
+   * submission with the [handleError](#handleerror) function.
    */
   submit: <K>() => Promise<K>
   /**
@@ -92,7 +92,7 @@ export interface FormController<T> extends BaseController<BaseFormModule<T>> {
   /**
    * A provided helper function which handles most of the cleanup when there's an error from submitting a form.
    * Derives the errors, and adjusts the state to show them and move the form step to the first error in the set.
-   * Use this as the error handler for the :js:attr:`x <FormController.submit>` function, like so:
+   * Use this as the error handler for the [submit](#submit) function, like so:
    *
    *  .. code-block:: typescript
    *

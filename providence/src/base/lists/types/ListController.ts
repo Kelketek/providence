@@ -12,7 +12,8 @@ export interface ListController<T> extends BaseController<BaseListModule<T>> {
    */
   moduleType: 'list',
   /**
-   * An array of :js:class:`SingleControllers <SingleController>` based on the contents of the list.
+   * An array of [SingleControllers](../../../module_types/singles.md#single-controllers) based on the contents of
+   * the list.
    */
   list: SingleController<T>[],
   /**
@@ -33,7 +34,7 @@ export interface ListController<T> extends BaseController<BaseListModule<T>> {
    * A list of SingleControllers
    */
   /**
-   * Performs a get request. Will create/replace the tracked :ref:`Single <module_types/singles:Singles>` modules based
+   * Performs a get request. Will create/replace the tracked [Single](../../../module_types/singles.md) modules based
    * on what it retrieves, and return a promise containing the raw values.
    */
   get: () => Promise<T[]>,
@@ -48,20 +49,21 @@ export interface ListController<T> extends BaseController<BaseListModule<T>> {
    */
   setPage: (val: number) => void,
   /**
-   * Retrieves the stored error information from our last attempt at :js:attr:`getting <ListController.get>` the
+   * Retrieves the stored error information from our last attempt at [getting](#get) the
    * remote list.
    */
   errors: ErrorTracking,
   /**
-   * Empties out the values in :js:attr:`errors <ListController.errors>`.
+   * Empties out the values in [errors](#errors).
    */
   resetErrors: () => void,
   /**
-   * Set up the single modules and mark :js:attr`ready <ListController.ready>` as `true`. Mostly useful for testing.
+   * Set up the single modules and mark [ready](#ready) as `true`. Mostly useful for testing.
    *
-   * Unlike with :js:attr:`the single version of this function <SingleController.makeReady>`, this function returns
-   * a promise, since it has to create new modules separate from the list's own internal state and so must create
-   * several internal transactions rather than a single commit.
+   * Unlike with
+   * [the single controller version of this function](../interfaces/singles_types_SingleController.SingleController.md#makeready),
+   * this version returns a promise, since it has to create new modules separate from the list's own internal state
+   * and so must create several internal transactions rather than a single commit.
    */
   makeReady: (val: T[]) => T[],
   /**
@@ -95,6 +97,11 @@ export interface ListController<T> extends BaseController<BaseListModule<T>> {
    * Getter/setter for query parameters used when interacting with the endpoint.
    */
   params: QueryParams|null,
+  /**
+   * Returns the keyProp of the list-- that is, the unique ID property on each single used to tell them apart. This
+   * is usually something like 'id', which is the default.
+   */
+  keyProp: keyof T,
   /**
    * An object that contains some mate information about pagination, such as the total count of items the endpoint
    * tracks, and the size of the most recently returned array from the server.

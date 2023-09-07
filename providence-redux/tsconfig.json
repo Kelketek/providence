@@ -15,10 +15,5 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "typedocOptions": {
-    "entryPoints": ["src/"],
-    "entryPointStrategy": "Expand",
-    "out": "docs/typedoc",
-    "exclude": ["**/node_modules/**", "dist/**"]
-  }
+  "exclude": ["dist/**", "node_modules/**", "staging/**"]
 }

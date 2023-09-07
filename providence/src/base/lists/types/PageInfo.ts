@@ -1,6 +1,6 @@
 /**
  * PageInfo contains meta information on pagination returned by the server. It is mostly used by the
- * :js:class:`Pagination` part of the :js:class:`Client`.
+ * [Paginator](../interfaces/types_Paginator.md) part of the :js:class:`Client`.
  */
 export interface PageInfo {
   /**

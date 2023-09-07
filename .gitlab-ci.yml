@@ -15,7 +15,9 @@ eslint:
 .testing_script:
   script:
     - apk add git make bash
-    - make install_prereqs
+    - cd providence && make install_prereqs
+    - make test
+    - cd ../providence-redux && make install_prereqs
     - make test
 
 tests-node18:
@@ -38,10 +40,10 @@ documentation:
   image: nikolaik/python-nodejs:python3.8-nodejs18-alpine
   script:
     - apk add git make bash
-    - cd providence && npm install
-    - cd providence && pip install -r docs/requirements.txt
-    - cd providence && pip install docs/
-    - cd providence/docs && make html
+    - pip install -r docs/requirements.txt
+    - cd providence && npm install && cd ..
+    - cd providence-redux && npm install && cd ..
+    - cd docs && make build
 
 npm-push-providence:
   stage: deploy

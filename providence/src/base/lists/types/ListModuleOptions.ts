@@ -2,7 +2,7 @@ import {QueryParams} from '../../types/QueryParams'
 
 /**
  * The construction parameters for lists dictate the behavior around handling its
- * :ref:`Singles <module_types/singles:Singles>` and the network requests used to manage them.
+ * [Singles](../../../module_types/singles.md) and the network requests used to manage them.
  */
 export interface ListModuleOptions<T> {
   /** The name of the module. Don't specify this-- it will be automatically supplied internally elsewhere.

@@ -17,7 +17,8 @@ export interface FormModuleOptions<T> {
    */
   endpoint?: string,
   /**
-   * Key-value sets of fields of this form. See :js:class:`FieldOptions` for the values.
+   * Key-value sets of fields of this form. See [FieldOptions](../interfaces/forms_types_FieldOptions.FieldOptions.md)
+   * for the values.
    */
   fields: FieldSetOptions<T>,
   /**
@@ -37,7 +38,8 @@ export interface FormModuleOptions<T> {
   /**
    * Forms may have 'steps' for wizard-like functionality. This keeps track of the current step of the form. When an
    * error is returned by the server, providence will roll the step back to the first step which contains a field with
-   * an error. See :js:class:`FieldOptions` for setting the step of a particular field.
+   * an error. See [FieldOptions](../interfaces/forms_types_FieldOptions.FieldOptions.md) for setting the step of a
+   * particular field.
    */
   step?: number,
 }

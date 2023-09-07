@@ -22,7 +22,7 @@ export interface Patcher<T, AttrName extends keyof T> {
   controller: SingleController<T>,
   /**
    * The most recently set value on the field through the patcher. Compared against the real value on the single x's
-   * field to determine if the value is :js:attr`dirty`.
+   * field to determine if the value is [dirty](#dirty).
    */
   cached: null | T[AttrName],
   /**
@@ -35,7 +35,7 @@ export interface Patcher<T, AttrName extends keyof T> {
   patching: boolean,
   /**
    * Whether the underlying value has been loaded successfully (that is, is `x` set on the
-   * :js:class:`SingleController`?)
+   * [SingleController](../interfaces/singles_types_SingleController.SingleController.md)?)
    */
   loaded: boolean,
   /**
@@ -45,26 +45,26 @@ export interface Patcher<T, AttrName extends keyof T> {
   /**
    * A getter and setter that invokes the patch requesting machinery. That is, set this value to send a patch request.
    *
-   * This value will return the :js:attr:`cached` value. Setting this value is equivalent to running :js:attr:`set`.
+   * This value will return the [cached](#cached) value. Setting this value is equivalent to running [set](#set).
    */
   model: T[AttrName],
   /**
-   * Gets the current value of the :js:attr`attrName` field on `x`.
+   * Gets the current value of the [attrName](#attrname) field on `x`.
    */
   rawValue: T[AttrName],
   /**
-   * Sets a new value for the field, updating the :js:attr:`cache` and then running :js:attr:`debouncedSet`.
+   * Sets a new value for the field, updating the :js:attr:`cache` and then running [debouncedSet](#debouncedset).
    */
   set: (val: T[AttrName]) => void,
   /**
-   * The raw set function that :js:attr:`debouncedSet` debounces. You usually don't want to call this directly.
-   * If you do, you'll probably want to set :js:attr:`cache` first. This function performs the actual patch request
+   * The raw set function that [debouncedSet](#debouncedset) debounces. You usually don't want to call this directly.
+   * If you do, you'll probably want to set [cache](#cache) first. This function performs the actual patch request
    * and handles the resulting server response.
    */
   rawSet: (val: T[AttrName]) => void,
   /**
-   * The debounced function that :js:attr:`set` calls. You usually don't want to call this directly.
-   * If you do, you'll probably want to set :js:attr:`cache` first.
+   * The debounced function that [set](#set) calls. You usually don't want to call this directly.
+   * If you do, you'll probably want to set [cache](#cache) first.
    */
   debouncedRawSet: lodash.DebouncedFunc<(val: T[AttrName]) => void>,
   /**

@@ -39,7 +39,7 @@ export interface FieldOptions<ValType> {
   /**
    * The 'step' this field is on. Forms can be constructed in wizard-like fashion, with several fields on one step, and
    * several steps in a form before submission. See the information on
-   * :js:attr:`the form module's step attribute <FormModuleOptions.step>` for more information.
+   * [the form module's step attribute](#step) for more information.
    */
   step?: number,
 }

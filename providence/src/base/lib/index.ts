@@ -173,7 +173,7 @@ export function baseDeriveErrors<T>(error: AxiosError<any, any>, knownFields: Ar
 
 /**
  * Example wrapper function around Axios. This is provided as the default example function for
- * :js:attr:`GlobalOptions.netCall`. Defined in :browse:`this file <src/base/lib/index.ts>`.
+ * [GlobalOptions.netCall](../interfaces/types_GlobalOptions.GlobalOptions.md#netcall).
  *
  * @typeParam T The type of the data sent in the request. This might be undefined for get.
  * @typeParam K The type of the data expected to return from the server. Defaults to `T`.
