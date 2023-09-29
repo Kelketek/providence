@@ -1,10 +1,5 @@
 pip-tools
 setuptools
-sphinx-rtd-theme
-sphinx-reload
-sphinx-panels
-# TSX lexer-- not yet merged into the JSX Lexer project for Pygments. This lexer isn't perfect-- it does seem
-# to skip some valid TSX, but it will highlight in most cases.
-git+https://github.com/martinzuern/tsx-lexer.git@2382ef2c97819d086aec1102db3944ae3a33ee42#egg=jsx-lexer
-# Fork of sphinx-js that doesn't break with the tsdoc version we're using.
-git+https://github.com/open-craft/sphinx-js.git@6336fb99a600126063bf02922b075e3357b62e6e#egg=sphinx-js
+mkdocs-material
+mkdocs-section-index
+mkdocs-include-markdown-plugin

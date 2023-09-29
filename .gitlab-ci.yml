@@ -12,39 +12,63 @@ eslint:
     - make install_prereqs
     - make quality
 
-tests-node17:
-  stage: test
-  image: node:17-alpine
+.testing_script:
   script:
     - apk add git make bash
-    - make install_prereqs
+    - cd providence && make install_prereqs
+    - make test
+    - cd ../providence-redux && make install_prereqs
     - make test
 
+tests-node18:
+  extends: .testing_script
+  stage: test
+  image: node:18-alpine
+
+tests-node17:
+  extends: .testing_script
+  stage: test
+  image: node:17-alpine
+
 tests-node16:
+  extends: .testing_script
   stage: test
   image: node:16-alpine
-  script:
-    - apk add git make bash
-    - make install_prereqs
-    - make test
 
 documentation:
   stage: test
-  image: nikolaik/python-nodejs:python3.8-nodejs16-alpine
+  image: nikolaik/python-nodejs:python3.8-nodejs18-alpine
   script:
     - apk add git make bash
-    - npm install
     - pip install -r docs/requirements.txt
-    - pip install docs/
-    - cd docs && make html
+    - cd providence && npm install && cd ..
+    - cd providence-redux && npm install && cd ..
+    - cd docs && make build
 
-npm_push:
+npm-push-providence:
   stage: deploy
-  image: node:17-alpine
+  image: node:18-alpine
   only:
-    - master
+    refs:
+      - master
+    changes:
+      - providence/**
   script:
     - apk add git make bash
-    - make install_prereqs
+    - cd providence && make install_prereqs
+    - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+    - make publish
+
+npm-push-providence-redux:
+  stage: deploy
+  image: node:18-alpine
+  only:
+    refs:
+      - master
+    changes:
+      - providence-redux/**
+  script:
+    - apk add git make bash
+    - cd providence-redux && make install_prereqs
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - make publish

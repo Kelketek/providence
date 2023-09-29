@@ -1,29 +1,33 @@
-# Minimal makefile for Sphinx documentation
-#
+export SHELL := /usr/bin/env bash
+export PROVIDENCE_PACKAGES := providence providence-redux
 
-# You can set these variables from the command line, and also
-# from the environment for the first two.
-SPHINXOPTS    ?=
-SPHINXBUILD   ?= sphinx-build
-SOURCEDIR     = .
-BUILDDIR      = _build
-
-# Put it first so that "make" without argument is like "make help".
-help:
-	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-
-.PHONY: help Makefile
-
-# Catch-all target: route all unknown targets to Sphinx using the new
-# "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-%: Makefile
-	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+default: install_prereqs includes build
 
 upgrade:
 	pip-compile requirements.in
 
 install_prereqs:
+	pip install --upgrade pip pip-tools
 	pip install -r requirements.txt
 
-run:
-	sphinx-reload .
+includes:
+	@set -e
+	# Clear out old compiled docs first.
+	rm -rf docs/reference
+	# Recreate the directory with its .gitkeep
+	git checkout docs/reference
+	for package in $${PROVIDENCE_PACKAGES[@]} ; do \
+	  cd ../$$package && \
+	  make generate_docs && \
+	  mv docs/typedoc ../docs/docs/reference/$$package && \
+	  cd ../docs && \
+	  rm docs/reference/$$package/README.md && \
+	  rm docs/reference/$$package/modules.md ; \
+	done
+	python update_mkdocs_yml.py
+
+run: includes
+	mkdocs serve
+
+build: includes
+	mkdocs build
