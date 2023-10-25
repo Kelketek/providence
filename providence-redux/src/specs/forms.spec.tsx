@@ -1,17 +1,17 @@
 // Adds initial patcher settings to state from runtime data if they don't already exist.
-import {FormState} from '@opencraft/providence/forms/types/FormState'
-import {FieldSet} from '@opencraft/providence/forms/types/FieldSet'
-import {fieldDefaults} from '@opencraft/providence/forms'
+import {FormState} from '@opencraft/providence/base/forms/types/FormState'
+import {FieldSet} from '@opencraft/providence/base/forms/types/FieldSet'
+import {fieldDefaults} from '@opencraft/providence/base/forms'
 import mockAxios from 'jest-mock-axios'
 import {createStore, IModuleStore} from 'redux-dynamic-modules'
 import {ctxRender, getForm} from './helpers'
 import {CodeRunner} from './CodeRunner'
-import {useForm} from '../index'
+import {useForm} from '../hooks'
 import {useLayoutEffect} from 'react'
 import {defaultContextValues} from '../context'
-import {nop} from '@opencraft/providence/lib'
-import {rs} from '@opencraft/providence/specs/helpers';
-import {GlobalOptions} from '@opencraft/providence/types/GlobalOptions';
+import {nop} from '@opencraft/providence/base/lib'
+import {rs} from '@opencraft/providence/base/specs/helpers';
+import {GlobalOptions} from '@opencraft/providence/base/types/GlobalOptions';
 
 let store: IModuleStore<any>
 let context: GlobalOptions

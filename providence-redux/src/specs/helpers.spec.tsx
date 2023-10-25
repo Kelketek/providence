@@ -1,5 +1,5 @@
 import {createStore, IModuleStore} from 'redux-dynamic-modules'
-import {GlobalOptions} from '@opencraft/providence/types/GlobalOptions'
+import {GlobalOptions} from '@opencraft/providence/base/types/GlobalOptions'
 import {ctxRender, getList} from './helpers'
 import {defaultContextValues} from '../context'
 import {Lister} from './Lister'

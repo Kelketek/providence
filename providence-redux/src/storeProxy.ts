@@ -1,7 +1,7 @@
-import {BaseModule} from '@opencraft/providence/types/BaseModule'
+import {BaseModule} from '@opencraft/providence/base/types/BaseModule'
 import {IModuleStore} from 'redux-dynamic-modules'
-import BaseProxyStore from '@opencraft/providence/types/BaseProxyStore'
-import {GlobalOptions} from '@opencraft/providence/types/GlobalOptions'
+import BaseProxyStore from '@opencraft/providence/base/types/BaseProxyStore'
+import {GlobalOptions} from '@opencraft/providence/base/types/GlobalOptions'
 
 declare type MakeProxyOptions<ModuleDefinition extends BaseModule<any, any, any>> = {
   name: string, baseModule: ModuleDefinition, globalOptions: GlobalOptions

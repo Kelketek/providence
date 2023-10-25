@@ -48,7 +48,7 @@ demo_loop:
 stage:
 	rm -rf staging
 	cp -a src staging
-	node ../providence/test_munger.js '@opencraft/providence' staging/core staging
+	node ../providence/test_munger.js '@opencraft/providence/base' staging/core staging
 	cp -a ../providence/src/base staging/core
 	# Clear any precompiled files. Compiler might skip them because of modification time.
 	find staging/core -name '*.js' -delete
