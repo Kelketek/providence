@@ -20,7 +20,7 @@ module.exports = {
         '**/**/*.spec.tsx',
     ],
     transform: {
-        '^.+\\.tsx?$': [
+        '^.+\\.m?tsx?$': [
             'ts-jest',
             {
                 tsconfig: './test-tsconfig.json',

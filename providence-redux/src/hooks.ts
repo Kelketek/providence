@@ -1,13 +1,25 @@
 import {IModuleStore} from 'redux-dynamic-modules'
 import {useContext, useLayoutEffect, useMemo} from 'react'
 import {useSelector, useStore} from 'react-redux'
-import {ProvidenceContext} from './context'
 import {v4 as randomUUID} from 'uuid'
-import {BaseModuleOptions} from '@opencraft/providence/types/BaseModuleOptions'
-import {defaultSpacer, getController} from '@opencraft/providence/registry'
-import {AnyModule} from '@opencraft/providence/types/AnyModule'
-import {AnySlicer} from '@opencraft/providence/types/AnySlicer'
-import {BaseController} from '@opencraft/providence/types/BaseController'
+import {SingleModule} from '@opencraft/providence/base/singles'
+import {SingleModuleOptions} from '@opencraft/providence/base/singles/types/SingleModuleOptions'
+import {SingleController} from '@opencraft/providence/base/singles/types/SingleController'
+import {BaseSingleModule} from '@opencraft/providence/base/singles/types/BaseSingleModule'
+import {ListModule} from '@opencraft/providence/base/lists'
+import {ListModuleOptions} from '@opencraft/providence/base/lists/types/ListModuleOptions'
+import {BaseListModule} from '@opencraft/providence/base/lists/types/BaseListModule'
+import {ListController} from '@opencraft/providence/base/lists/types/ListController'
+import {FormModule} from '@opencraft/providence/base/forms'
+import {FormModuleOptions} from '@opencraft/providence/base/forms/types/FormModuleOptions'
+import {BaseFormModule} from '@opencraft/providence/base/forms/types/BaseFormModule'
+import {FormController} from '@opencraft/providence/base/forms/types/FormController'
+import {BaseModuleOptions} from '@opencraft/providence/base/types/BaseModuleOptions'
+import {defaultSpacer, getController} from '@opencraft/providence/base/registry'
+import {AnyModule} from '@opencraft/providence/base/types/AnyModule'
+import {AnySlicer} from '@opencraft/providence/base/types/AnySlicer'
+import {BaseController} from '@opencraft/providence/base/types/BaseController'
+import {ProvidenceContext} from './context'
 
 
 /* Builds a React hook that creates Redux-aware Providence controllers. */
@@ -53,4 +65,24 @@ export const buildUseInterface = <
     }, [])
     return controller
   }
+}
+
+
+const useSingleBase = buildUseInterface<typeof SingleModule, SingleModuleOptions<any>, BaseSingleModule<any>, SingleController<any>>(SingleModule)
+const useListBase = buildUseInterface<typeof ListModule, ListModuleOptions<any>, BaseListModule<any>, ListController<any>>(ListModule)
+const useFormBase = buildUseInterface<typeof FormModule, FormModuleOptions<any>, BaseFormModule<any>, FormController<any>>(FormModule)
+
+// Last bit of coercing to make sure the controller always has the right typings when coming out.
+export const useSingle = <T,>(name: string[] | string, options: Omit<SingleModuleOptions<T>, 'name'>): SingleController<T> => {
+  return useSingleBase(name, options)
+}
+
+// Same here, but for lists.
+export const useList = <T,>(name: string[] | string, options: Omit<ListModuleOptions<T>, 'name'>): ListController<T> => {
+  return useListBase(name, options)
+}
+
+// And here for forms.
+export const useForm = <T,>(name: string[] | string, options: Omit<FormModuleOptions<T>, 'name'>): FormController<T> => {
+  return useFormBase(name, options)
 }

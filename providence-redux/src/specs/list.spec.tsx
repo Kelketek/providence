@@ -1,13 +1,13 @@
 import {createStore, IModuleStore} from 'redux-dynamic-modules'
-import {ctxRender} from './helpers'
+import {ctxRender} from '../testHelpers'
 import {CodeRunner} from './CodeRunner'
-import {useList} from '../index'
+import {useList} from '../hooks'
 import mockAxios from 'jest-mock-axios'
 import {useLayoutEffect} from 'react'
-import {SingleController} from '@opencraft/providence/singles/types/SingleController'
+import {SingleController} from '@opencraft/providence/base/singles/types/SingleController'
 import {defaultContextValues} from '../context'
-import {ListState} from '@opencraft/providence/lists/types/ListState'
-import {flushPromises, rq, rs, waitFor} from '@opencraft/providence/specs/helpers'
+import {ListState} from '@opencraft/providence/base/lists/types/ListState'
+import {flushPromises, rq, rs, waitFor} from '@opencraft/providence/base/lib/testHelpers'
 import {act} from "@testing-library/react";
 
 let store: IModuleStore<any>

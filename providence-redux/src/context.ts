@@ -10,15 +10,15 @@ import {
   baseSetCurrentPage,
   baseGetTotalPages,
   baseDeriveForm,
-} from '@opencraft/providence/lib'
-import {ProvidenceRegistries} from '@opencraft/providence/registry/types/ProvidenceRegistries'
+} from '@opencraft/providence/base/lib'
+import {ProvidenceRegistries} from '@opencraft/providence/base/registry/types/ProvidenceRegistries'
 import {IModule, IModuleStore} from 'redux-dynamic-modules'
-import {AnySlicer} from '@opencraft/providence/types/AnySlicer'
-import {MakeModuleOptions} from '@opencraft/providence/registry/types/MakeModuleOptions'
+import {AnySlicer} from '@opencraft/providence/base/types/AnySlicer'
+import {MakeModuleOptions} from '@opencraft/providence/base/registry/types/MakeModuleOptions'
 import {createSlice, ReducersMapObject} from '@reduxjs/toolkit'
-import {GlobalOptions} from '@opencraft/providence/types/GlobalOptions'
+import {GlobalOptions} from '@opencraft/providence/base/types/GlobalOptions'
 import {makeProxyFactory} from './storeProxy'
-import {email} from '@opencraft/providence/forms/validators'
+import {email} from '@opencraft/providence/base/forms/validators'
 
 
 export const makeModuleFactory = <T extends AnySlicer>(store: IModuleStore<any>) => {

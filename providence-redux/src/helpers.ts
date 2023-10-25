@@ -1,4 +1,4 @@
-import {BaseModule} from '@opencraft/providence/types/BaseModule'
+import {BaseModule} from '@opencraft/providence/base/types/BaseModule'
 
 /**
  * Transforming function that translates the redux internal dispatch actions into functions that are compatible

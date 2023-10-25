@@ -7,7 +7,7 @@
     "moduleResolution": "node",
     "baseUrl": "./src",
     "paths": {
-      "@opencraft/providence/*": ["../../../providence/src/base/*"]
+      "@opencraft/providence/*": ["../../../providence/src/*"]
     },
     "sourceMap": true,
     "esModuleInterop": true,
