@@ -1,6 +1,6 @@
 import {createStore, IModuleStore} from 'redux-dynamic-modules'
 import {v4 as randomUUID} from 'uuid'
-import {defaultContextValues, ProvidenceContext} from '../context'
+import {defaultContextValues, ProvidenceContext} from './context'
 import {ReactComponentElement, ReactNode} from 'react'
 import {Provider} from 'react-redux'
 import {GlobalOptions} from '@opencraft/providence/base/types/GlobalOptions'

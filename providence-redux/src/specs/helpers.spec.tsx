@@ -1,6 +1,6 @@
 import {createStore, IModuleStore} from 'redux-dynamic-modules'
 import {GlobalOptions} from '@opencraft/providence/base/types/GlobalOptions'
-import {ctxRender, getList} from './helpers'
+import {ctxRender, getList} from '../testHelpers'
 import {defaultContextValues} from '../context'
 import {Lister} from './Lister'
 import {act} from "@testing-library/react";

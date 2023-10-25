@@ -4,13 +4,13 @@ import {FieldSet} from '@opencraft/providence/base/forms/types/FieldSet'
 import {fieldDefaults} from '@opencraft/providence/base/forms'
 import mockAxios from 'jest-mock-axios'
 import {createStore, IModuleStore} from 'redux-dynamic-modules'
-import {ctxRender, getForm} from './helpers'
+import {ctxRender, getForm} from '../testHelpers'
 import {CodeRunner} from './CodeRunner'
 import {useForm} from '../hooks'
 import {useLayoutEffect} from 'react'
 import {defaultContextValues} from '../context'
 import {nop} from '@opencraft/providence/base/lib'
-import {rs} from '@opencraft/providence/base/specs/helpers';
+import {rs} from '@opencraft/providence/base/lib/testHelpers';
 import {GlobalOptions} from '@opencraft/providence/base/types/GlobalOptions';
 
 let store: IModuleStore<any>

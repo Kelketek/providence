@@ -17,8 +17,8 @@ Here's an example of how you might set up and use `getSingle`, for instance:
     ```typescript
     import {createStore, IModuleStore} from 'redux-dynamic-modules'
     // You may find several functions in Providence's internal test helpers instructive.
-    import {flushPromises, rq, rs, waitFor} from '@opencraft/providence/specs/helpers'
-    import {getSingle} from '@opencraft/providence-redux/specs/helpers'
+    import {flushPromises, rq, rs, waitFor} from '@opencraft/providence/base/lib/testHelpers'
+    import {getSingle} from '@opencraft/providence-redux/testHelpers'
     import {defaultContextValues} from '@opencraft/providence-redux/context'
     // We use mockAxios for this test: https://www.npmjs.com/package/jest-mock-axios
     import mockAxios from 'jest-mock-axios'
@@ -53,8 +53,8 @@ Here's an example of how you might set up and use `getSingle`, for instance:
     ```javascript
     import {createStore, IModuleStore} from 'redux-dynamic-modules'
     // You may find several functions in Providence's internal test helpers instructive.
-    import {flushPromises, rq, rs, waitFor} from '@opencraft/providence/specs/helpers'
-    import {getSingle} from '@opencraft/providence-redux/specs/helpers'
+    import {flushPromises, rq, rs, waitFor} from '@opencraft/providence/testHelpers'
+    import {getSingle} from '@opencraft/providence-redux/testHelpers'
     import {defaultContextValues} from '@opencraft/providence-redux/context'
     // We use mockAxios for this test: https://www.npmjs.com/package/jest-mock-axios
     import mockAxios from 'jest-mock-axios'
@@ -82,7 +82,7 @@ Here's an example of how you might set up and use `getSingle`, for instance:
 
 Used the above technique with react-testing-library, you can observe how things change in your rendered components when the state changes.
 
-You will want to render your components wrapped in the ProvidenceProvider, in much the same way they're rendered normally. For an example of this, check out [ctxRender](../reference/providence-redux/functions/specs_helpers.ctxRender.md), included in the testing utilities.
+You will want to render your components wrapped in the ProvidenceProvider, in much the same way they're rendered normally. For an example of this, check out [ctxRender](../reference/providence-redux/functions/lib_testHelpers.ctxRender.md), included in the testing utilities.
 
 === "TypeScript"
 
@@ -90,7 +90,7 @@ You will want to render your components wrapped in the ProvidenceProvider, in mu
     import {createStore, IModuleStore} from 'redux-dynamic-modules'
     import {GlobalOptions} from '@opencraft/providence/types/GlobalOptions'
     import {ctxRender, getList} from './helpers'
-    import {defaultContextValues} from '../context'
+    import {defaultContextValues} from './context'
     import {Lister} from './Lister'
     import {act} from "@testing-library/react";
     
