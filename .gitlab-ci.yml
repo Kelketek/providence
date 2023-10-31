@@ -69,6 +69,7 @@ npm-push-providence-redux:
       - providence-redux/**
   script:
     - apk add git make bash
+    - cd providence && make install_prereqs && cd ..
     - cd providence-redux && make install_prereqs
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - make publish

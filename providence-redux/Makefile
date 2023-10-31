@@ -11,7 +11,6 @@ install_prereqs:
 # Build the NPM package.
 build:
 	rm -rvf dist
-	rm -rvf src/core
 	cp -a src dist
 	cp tsconfig.json dist/
 	sed -i -e '/"rootDir"/d' dist/tsconfig.json
