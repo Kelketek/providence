@@ -1,7 +1,7 @@
 {
   "name": "@opencraft/providence-redux",
   "description": "The official redux plugin for the Eye of Providence state management library.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "index.ts",
   "scripts": {
     "test": "jest",
