@@ -84,7 +84,7 @@ export interface getControllerOptions<Slicer extends AnySlicer, Module extends B
   moduleOptions?: Omit<BaseModuleOptions, 'name'>,
   globalOptions: GlobalOptions,
   makeModule: (options: MakeModuleOptions<any>) => () => void,
-  makeProxy: (options: MakeModuleOptions<any>) => BaseProxyStore<Module>
+  makeProxy: (options: MakeModuleOptions<any>) => BaseProxyStore<Module>,
 }
 
 /**
@@ -109,7 +109,7 @@ export const removeListener = ({uid, name, registryRoot}: RemoveListenerArgs) =>
   /* istanbul ignore if */
   if (listeners === undefined) {
     console.warn(`Tried to remove listener for ${name} ${uid}, but registry entry is broken or missing.`)
-    return
+    return false
   }
   listeners = listeners.filter((val: string) => val != uid)
   registerOrUpdateEntry(registryRoot, namespace, {listeners})
@@ -152,7 +152,7 @@ export const getController = <
   }
   if (!listeners) {
     listeners = [uid]
-  } else {
+  } else if (!listeners.includes(uid)) {
     listeners.push(uid)
   }
   // Note: if a controller already exists, remover will already be defined.

@@ -12,7 +12,7 @@ import {listControllerFactory} from './controller'
 import {ListController} from './types/ListController'
 import {fetchableModule} from '../lib/fragments'
 import {singleDefaults, SingleModule} from '../singles'
-import {registerOrUpdateEntry, removeListener} from '../registry'
+import {registerOrUpdateEntry, removeFromRegistry, removeListener} from '../registry'
 import {BaseSingleModule} from '../singles/types/BaseSingleModule'
 import {PageInfo} from './types/PageInfo'
 import {RegistryEntry} from "../registry/types/RegistryEntry";
@@ -136,19 +136,37 @@ export function buildList<T extends object>(globalOptions: GlobalOptions): (opti
           // if there's enough demand from client developers.
           const refs = addModules({globalOptions, makeModule, commit, state, entries, stateFor})
           const toRemove = state.refs.filter((name) => !refs.includes(name))
+          // We not only want to remove the registry-based listener, but the controller-based listener in case it exists
+          // as well. In most cases these should be in sync, but they might not, if:
+          //
+          // * A list module is created without a controller
+          // * A list controller has not yet had its `list` property accessed (and so no Single Controllers have
+          //   been created)
+          const controllerUid = retrieveName<RegistryEntry<BaseListModule<T>, ListController<T>>>(
+            globalOptions.registries()['list'], buildNestedPath(explodeName(state.name), 'children'),
+            true,
+          )?.controller?.uid
+          const singlesRegistry = globalOptions.registries().single
           for (const name of toRemove) {
-            const listenersRemain = removeListener({uid: state.name, registryRoot: globalOptions.registries().single, name})
+            const explodedName = explodeName(name)
+            let listenersRemain = removeListener({uid: state.name, registryRoot: singlesRegistry, name})
+            if (controllerUid) {
+              listenersRemain = removeListener({uid: controllerUid, name, registryRoot: singlesRegistry})
+            }
             // If controllers exist, they'll need to perform the cleanup. But if they don't, we do. Since both the
             // controllers and the list module directly both register as listeners, the module should never be destroyed
             // before it's properly abandoned.
             const targetState = stateFor<BaseSingleModule<T>>(name)
             if (!listenersRemain && !(targetState && targetState.persistent)) {
               const {remover} = retrieveName(
-                globalOptions.registries().single, buildNestedPath(explodeName(name), 'children'),
+                globalOptions.registries().single, buildNestedPath(explodedName, 'children'),
                 true,
               ) as RegistryEntry<BaseListModule<T>, ListController<T>> || {remover: undefined}
               if (remover) {
+                // Removes from underlying store
                 remover()
+                // And then from registry.
+                removeFromRegistry(globalOptions.registries()['single'], explodedName)
               } else {
                 console.warn(`Attempted to remove list item ${name}, but it was already removed!`)
               }

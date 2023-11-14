@@ -37,7 +37,7 @@ Here's an example of how you might set up and use `getSingle`, for instance:
         context = defaultContextValues()
       })
       it('Patches a resource', async () => {
-        const controller = getSingle<MultipleProps>('test', {endpoint: '/test/', x: {a: 'stuff', b: 3}}, {store, context})
+        const {controller} = getSingle<MultipleProps>('test', {endpoint: '/test/', x: {a: 'stuff', b: 3}}, {store, context})
         controller.patch({b: 4})
         expect(mockAxios.request).toHaveBeenCalledWith(rq('/test/', 'patch', {b: 4}))
         expect(mockAxios.request).toHaveBeenCalledTimes(1)
@@ -67,7 +67,7 @@ Here's an example of how you might set up and use `getSingle`, for instance:
         context = defaultContextValues()
       })
       it('Patches a resource', async () => {
-        const controller = getSingle('test', {endpoint: '/test/', x: {a: 'stuff', b: 3}}, {store, context})
+        const {controller} = getSingle('test', {endpoint: '/test/', x: {a: 'stuff', b: 3}}, {store, context})
         controller.patch({b: 4})
         expect(mockAxios.request).toHaveBeenCalledWith(rq('/test/', 'patch', {b: 4}))
         expect(mockAxios.request).toHaveBeenCalledTimes(1)
@@ -108,7 +108,7 @@ You will want to render your components wrapped in the ProvidenceProvider, in mu
         context = defaultContextValues()
       })
       it('Allows the helper functions to mix in and out of rendering contexts.', async () => {
-        const controller = getList<TestType>('testList', {endpoint: '#'}, {store, context})
+        const {controller} = getList<TestType>('testList', {endpoint: '#'}, {store, context})
         await controller.makeReady([{id: 1, text: 'Beep'}, {id: 2, text: 'Boop'}])
         const ui = <Lister listName={'testList'} listOpts={{endpoint: '#'}}/>
         // You'll want to make your own render function depending on what providers
@@ -141,7 +141,7 @@ You will want to render your components wrapped in the ProvidenceProvider, in mu
         context = defaultContextValues()
       })
       it('Allows the helper functions to mix in and out of rendering contexts.', async () => {
-        const controller = getList('testList', {endpoint: '#'}, {store, context})
+        const {controller} = getList('testList', {endpoint: '#'}, {store, context})
         await controller.makeReady([{id: 1, text: 'Beep'}, {id: 2, text: 'Boop'}])
         const ui = <Lister listName={'testList'} listOpts={{endpoint: '#'}}/>
         // You'll want to make your own render function depending on what providers
