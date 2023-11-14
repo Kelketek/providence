@@ -314,7 +314,7 @@ describe('Single module tasks', () => {
     await flushPromises()
   })
   it('Sets and retrieves errors', async () => {
-    const controller = getSingle<TestType>('test', {}, {store, context})
+    const {controller} = getSingle<TestType>('test', {}, {store, context})
     const errors = {status: 'borked', messages: ['Hello!']}
     controller.errors = {status: 'borked', messages: ['Hello!']}
     expect(controller.errors).toEqual({status: 'borked', messages: ['Hello!']})
@@ -324,7 +324,7 @@ describe('Single module tasks', () => {
     expect(store.getState()).toEqual(singleState())
   })
   it('Serializes to JSON', async () => {
-    const controller = getSingle<TestType>('test', {x: {a: 'Beep'}}, {store, context})
+    const {controller} = getSingle<TestType>('test', {x: {a: 'Beep'}}, {store, context})
     expect(JSON.parse(JSON.stringify(controller))).toEqual({
       controller: 'single.test',
       moduleType: 'single',
@@ -332,7 +332,7 @@ describe('Single module tasks', () => {
     })
   })
   it('Patches a resource', async () => {
-    const controller = getSingle<MultipleProps>('test', {endpoint: '/test/', x: {a: 'stuff', b: 3}}, {store, context})
+    const {controller} = getSingle<MultipleProps>('test', {endpoint: '/test/', x: {a: 'stuff', b: 3}}, {store, context})
     controller.patch({b: 4})
     expect(mockAxios.request).toHaveBeenCalledWith(rq('/test/', 'patch', {b: 4}))
     expect(mockAxios.request).toHaveBeenCalledTimes(1)
@@ -341,7 +341,7 @@ describe('Single module tasks', () => {
     expect(controller.x).toEqual({a: 'stuff', b: 5})
   })
   it('Deletes a resource', async () => {
-    const controller = getSingle<TestType>('test', {endpoint: '/test/', x: {a: 'stuff'}}, {store, context})
+    const {controller} = getSingle<TestType>('test', {endpoint: '/test/', x: {a: 'stuff'}}, {store, context})
     controller.delete().then(() => {
       expect(controller.deleted).toBe(true)
     })

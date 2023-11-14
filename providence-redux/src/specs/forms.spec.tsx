@@ -154,7 +154,7 @@ describe('Form module handling', () => {
     ctxRender(<CodeRunner code={submitForm}/>, {store})
   })
   it('Handles an error upon submission', async () => {
-    const controller = getForm(
+    const {controller} = getForm(
       'test', {
       endpoint: '/test/',
       fields: {name: {value: 'Fox', step: 2}, age: {value: 20, step: 1}},

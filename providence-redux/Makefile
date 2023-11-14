@@ -50,7 +50,7 @@ stage:
 	node ../providence/test_munger.js '@opencraft/providence/base' staging/core staging
 	cp -a ../providence/src/base staging/core
 	# Clear any precompiled files. Compiler might skip them because of modification time.
-	find staging/core -name '*.js' -delete
+	find staging -name '*.js' -delete
 
 generate_docs: install_prereqs stage
 	npx typedoc --tsconfig test-tsconfig.json

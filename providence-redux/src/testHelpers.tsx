@@ -3,8 +3,8 @@ import {v4 as randomUUID} from 'uuid'
 import {defaultContextValues, ProvidenceContext} from './context'
 import {ReactComponentElement, ReactNode} from 'react'
 import {Provider} from 'react-redux'
-import {GlobalOptions} from '@opencraft/providence/base/types/GlobalOptions'
 import {render} from '@testing-library/react'
+import {GlobalOptions} from '@opencraft/providence/base/types/GlobalOptions'
 import {AnySlicer} from '@opencraft/providence/base/types/AnySlicer'
 import {BaseModuleOptions} from '@opencraft/providence/base/types/BaseModuleOptions'
 import {AnyModule} from '@opencraft/providence/base/types/AnyModule'
@@ -38,7 +38,8 @@ export const ctxRender = (ui: ReactComponentElement<any>, {context, store}: Cont
   return render(ui, {wrapper})
 }
 
-export type TestContext = {store: IModuleStore<any>, context: GlobalOptions}
+export type TestContext = {store: IModuleStore<any>, context: GlobalOptions, uid?: string}
+export type ControllerBundle<T> = {controller: T, remover: () => void}
 
 /*
 Builds a function which allows us to retrieve a controller outside the React lifecycle,
@@ -50,12 +51,12 @@ export const buildTestControllerFetcher = <
   ModuleDefinition extends AnyModule,
   Controller extends BaseController<ModuleDefinition>
 >(module: ModuleType) => {
-  return (namespace: string[] | string, moduleOptions: Omit<ModuleOptions, 'name'>, {store, context}: TestContext): Controller => {
+  return (namespace: string[] | string, moduleOptions: Omit<ModuleOptions, 'name'>, {store, context, uid}: TestContext): ControllerBundle<Controller> => {
     // We create a unique identifier for each component. This identifier will remain with the component
     // until it is destroyed, enabling us to ensure we're tracking listeners correctly.
-    const uid = randomUUID()
+    uid = uid || randomUUID()
     const modifiedNamespace = defaultSpacer(module.name, namespace)
-    const {controller} = getController<ModuleType, ModuleDefinition, Controller>({
+    const {controller, remover} = getController<ModuleType, ModuleDefinition, Controller>({
       module,
       uid,
       namespace: modifiedNamespace,
@@ -64,7 +65,8 @@ export const buildTestControllerFetcher = <
       makeModule: context.drivers.makeModuleFactory(store),
       makeProxy: context.drivers.makeProxyFactory(store),
     })
-    return controller
+    const boundRemover = () => {remover(uid as string)}
+    return {controller, remover: boundRemover}
   }
 }
 
@@ -73,16 +75,16 @@ const useListBase = buildTestControllerFetcher<typeof ListModule, ListModuleOpti
 const useFormBase = buildTestControllerFetcher<typeof FormModule, FormModuleOptions<any>, BaseFormModule<any>, FormController<any>>(FormModule)
 
 // Last bit of coercing to make sure the controller always has the right typings when coming out.
-export const getSingle = <T,>(name: string[] | string, options: Omit<SingleModuleOptions<T>, 'name'>, testContext: TestContext): SingleController<T> => {
+export const getSingle = <T,>(name: string[] | string, options: Omit<SingleModuleOptions<T>, 'name'>, testContext: TestContext): ControllerBundle<SingleController<T>> => {
   return useSingleBase(name, options, testContext)
 }
 
 // Same here, but for lists.
-export const getList = <T,>(name: string[] | string, options: Omit<ListModuleOptions<T>, 'name'>, testContext: TestContext): ListController<T> => {
+export const getList = <T,>(name: string[] | string, options: Omit<ListModuleOptions<T>, 'name'>, testContext: TestContext): ControllerBundle<ListController<T>> => {
   return useListBase(name, options, testContext)
 }
 
 // And here for forms.
-export const getForm = <T,>(name: string[] | string, options: Omit<FormModuleOptions<T>, 'name'>, testContext: TestContext): FormController<T> => {
+export const getForm = <T,>(name: string[] | string, options: Omit<FormModuleOptions<T>, 'name'>, testContext: TestContext): ControllerBundle<FormController<T>> => {
   return useFormBase(name, options, testContext)
 }

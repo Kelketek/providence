@@ -1,5 +1,5 @@
 import {createStore, IModuleStore} from 'redux-dynamic-modules'
-import {ctxRender} from '../testHelpers'
+import {ctxRender, getList, getSingle} from '../testHelpers'
 import {CodeRunner} from './CodeRunner'
 import {useList} from '../hooks'
 import mockAxios from 'jest-mock-axios'
@@ -91,32 +91,78 @@ describe('List module handling', () => {
     )
   })
   it('Cleans up its listener references when the underlying list has changed', async ()=> {
-    const globalOptions = defaultContextValues()
-    const fetchAndBuild = () => {
-      const controller = useList<TestType>('test', {endpoint: '/test/'})
-      useLayoutEffect(() => {
-        controller.makeReady([
-          {a: 'stuff', id: 1},
-          {a: 'things', id: 2},
-          {a: 'wat', id: 3},
-          {a: 'do', id: 4},
-        ])
-        // Force list to be generated.
-        controller.list
-        controller.dispatch(
-          'setList', [
-            // New string value.
-            {a: 'dude', id: 2},
-            {a: 'Beep', id: 5},
-          ])
-        // And regenerated.
-        controller.list
-        const registries = globalOptions.registries()
-        expect(registries.single.list.children.test.children['1']).toBeUndefined()
-        expect(registries.single.list.children.test.children['2'].listeners.includes(controller.uid))
-      }, [])
-    }
-    ctxRender(<CodeRunner code={fetchAndBuild} />, {store, context: globalOptions})
+    const context = defaultContextValues()
+    const {controller} = getList<TestType>('test', {endpoint: '/test/'}, {store, context})
+    controller.makeReady([
+      {a: 'stuff', id: 1},
+      {a: 'things', id: 2},
+      {a: 'wat', id: 3},
+      {a: 'do', id: 4},
+    ])
+    await controller.dispatch(
+      'setList', [
+        // New string value.
+        {a: 'dude', id: 2},
+        {a: 'Beep', id: 5},
+      ])
+    const registries = context.registries()
+    expect(registries.single.list.children.test.children['1']).toBeUndefined()
+    expect(registries.single.list.children.test.children['2'].listeners.includes(controller.uid))
+  })
+  it('Retains item entries if they are still referenced elsewhere', async () => {
+    const context = defaultContextValues()
+    const {controller} = getList<TestType>('test', {endpoint: '/test/'}, {store, context})
+    controller.makeReady([
+      {a: 'stuff', id: 1},
+      {a: 'things', id: 2},
+      {a: 'wat', id: 3},
+      {a: 'do', id: 4},
+    ])
+    // Force creation of listeners.
+    controller.list
+    const registries = context.registries()
+    const singleController = getSingle<TestType>(controller.list[0].namespace, {endpoint: '#'}, {store, context, uid: 'beep'}).controller
+    await controller.dispatch(
+      'setList', [
+        // New string value.
+        {a: 'dude', id: 2},
+        {a: 'Beep', id: 5},
+      ])
+    expect(registries.single.list.children.test.children['1']).toBeTruthy()
+    expect(registries.single.list.children.test.children['3']).toBeFalsy()
+    expect(controller.list.filter((controller) => controller.x?.id === 1).length).toEqual(0)
+    expect(singleController.x?.a).toEqual('stuff')
+  })
+  it('Does not break when outside references leave', async () => {
+    const context = defaultContextValues()
+    const controllerBundle = getList<TestType>('test', {endpoint: '/test/'}, {store, context})
+    let controller = controllerBundle.controller
+    const listRemover = controllerBundle.remover
+    const registries = context.registries()
+    controller.makeReady([
+      {a: 'stuff', id: 1},
+      {a: 'things', id: 2},
+      {a: 'wat', id: 3},
+      {a: 'do', id: 4},
+    ])
+    let {remover} = getSingle<TestType>(controller.list[0].namespace, {endpoint: '#'}, {store, context, uid: 'beep'})
+    remover()
+    expect(registries.single.list.children.test.children['1']).toBeTruthy();
+    ({remover} = getSingle<TestType>(controller.list[0].namespace, {endpoint: '#'}, {store, context, uid: 'beep'}))
+    controller.list
+    remover()
+    expect(registries.single.list.children.test.children['1']).toBeTruthy();
+    ({remover} = getSingle<TestType>(controller.list[0].namespace, {endpoint: '#'}, {store, context, uid: 'beep'}))
+    controller.makeReady([])
+    expect(registries.single.list.children.test.children['1']).toBeTruthy();
+    listRemover()
+    expect(registries.single.list.children.test.children['1']).toBeTruthy();
+    remover()
+    expect(registries.single.list.children.test.children['1']).toBeUndefined();
+    ({controller} = getList<TestType>('test', {endpoint: '/test/'}, {store, context}))
+    controller.makeReady([{a: 'things', id: 2}])
+    expect(registries.single.list.children.test.children['2']).toBeTruthy();
+    expect(registries.single.list.children.test.children['1']).toBeUndefined();
   })
   it('Gives a warning when a single has been removed pre-emptively',async () => {
     const globalOptions = defaultContextValues()

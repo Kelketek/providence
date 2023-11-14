@@ -8,7 +8,6 @@ import {getController} from '../registry'
 import {SingleModule} from '../singles'
 import {BaseSingleModule} from '../singles/types/BaseSingleModule'
 import {SingleController} from '../singles/types/SingleController'
-import {EntryRemover} from '../registry/types/EntryRemover'
 import {fetchableProperties} from '../lib/fragments'
 import {FetchableControllerProperties} from '../types/FetchableControllerProperties'
 import {AxiosResponse} from 'axios'
@@ -21,7 +20,6 @@ export type ListFactoryArgs<T> = {
 
 export function listControllerFactory<T>({store, globalOptions}: ListFactoryArgs<T>) {
   const {commit, dispatch, attr, makeModule, makeProxy, moduleState} = store
-  const tracker: {[key: string]: EntryRemover} = {}
   const controller: Omit<ListController<T>, keyof FetchableControllerProperties> = {
     get moduleType (): 'list' {
       return 'list'
@@ -99,16 +97,8 @@ export function listControllerFactory<T>({store, globalOptions}: ListFactoryArgs
           makeModule,
           makeProxy,
         })
-        tracker[name] = result.remover
         controllers.push(result.controller)
       })
-      for (const name of Object.keys(tracker)) {
-        if (names.has(name)) {
-          continue
-        }
-        tracker[name](controller.uid)
-        delete tracker[name]
-      }
       return controllers.filter((controller) => controller.x && !controller.deleted)
     },
     get totalPages() {
@@ -117,10 +107,6 @@ export function listControllerFactory<T>({store, globalOptions}: ListFactoryArgs
     preDestroy() {
       controller.commit('kill')
       controller.rawList = []
-      for (const name of Object.keys(tracker)) {
-        tracker[name](controller.uid)
-        delete tracker[name]
-      }
     },
     async get() {
       return controller.dispatch('get')
