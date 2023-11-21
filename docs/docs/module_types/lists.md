@@ -12,6 +12,7 @@ To get a new list controller:
     === "TypeScript"
         ```typescript
         import {useList} from '@opencraft/providence-redux/hooks'
+        import {Single} from '@opencraft/providence-redux/components/Single'
         
         // Declare a type in TypeScript to get typechecking for your single's data structure.
         declare interface MyStructureType {
@@ -25,8 +26,27 @@ To get a new list controller:
            // Like with single controllers, firstRun will fetch the initial array.
            controller.firstRun()
           })
-          return <div>{controller.list.map(singleController) => <div>{singleController.x}</div>}</div>
-        }
+          return (
+            <div>
+              {
+                controller.list.map(singleController) => (
+                  // The 'Single' React component makes sure we rerender anything 
+                  // underneath it when the Single's state changes. We must specify
+                  // this for singles created by lists if we are doing anything which
+                  // isn't read-only with them.
+                  <Single controller={singleController}>
+                    {() => (
+                      // Note that the child of the Single component is a function. 
+                      // This is important-- otherwise the Single component won't be
+                      // able to decide when to rerender-- its parent will, and it
+                      // will be wrong.
+                      <div>{singleController.x}</div>
+                    )}
+                  </Single>
+                )
+              }
+            </div>
+          )
         ```
 
     === "JavaScript"
@@ -40,7 +60,27 @@ To get a new list controller:
              // Like with single controllers, firstRun will fetch the initial array.
              controller.firstRun()
            })
-          return <div>{controller.list.map(singleController) => <div>{singleController.x}</div>}</div>
+          return (
+            <div>
+              {
+                controller.list.map(singleController) => (
+                  // The 'Single' React component makes sure we rerender anything 
+                  // underneath it when the Single's state changes. We must specify
+                  // this for singles created by lists if we are doing anything which
+                  // isn't read-only with them.
+                  <Single controller={singleController}>
+                    {() => (
+                      // Note that the child of the Single component is a function. 
+                      // This is important-- otherwise the Single component won't be
+                      // able to decide when to rerender-- its parent will, and it
+                      // will be wrong.
+                      <div>{singleController.x}</div>
+                    )}
+                  </Single>
+                )
+              }
+            </div>
+          )
         }
         ```
 
